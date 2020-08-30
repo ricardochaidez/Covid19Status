@@ -1,0 +1,52 @@
+﻿@page "/covidinformation"
+
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using CovidStatus.Shared.Entities
+
+@inherits CovidStatus.Server.Pages.Bases.CovidStatusBase
+
+@if (SelectedCounty == null || CovidDataList == null)
+{
+    <h4>Loading...</h4>
+}
+else
+{
+    <h3>Covid Status Per County</h3>
+
+    <div>
+        <SfDropDownList TValue="byte"
+                        TItem="County"
+                        Placeholder="Select County:"
+                        FloatLabelType="@FloatLabelType.Auto"
+                        AllowFiltering="true"
+                        DataSource="@CountyList"
+                        CssClass="e-bold-label"
+                        Value="@DefaultCounty">
+            <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
+            <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
+        </SfDropDownList>
+
+        <br />
+        <h3>Population: <span>@SelectedCounty.Population.ToString("N0")</span></h3>
+    </div>
+    <br/>
+    <br/>
+    <div>
+        <SfGrid DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true">
+            <GridPageSettings PageSize="5"></GridPageSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.County) HeaderText="County Name" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.TotalCountConfirmed) HeaderText="Total Count Confirmed" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Count Confirmed" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.SevenDayMovingAverage) Format="N2" HeaderText="7 Day Moving Average" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.CovidCasesPerOneHundredThousand) Format="N2" HeaderText="COVID Cases Per 100k Pop" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.RateChange) Format="P2" HeaderText="Rate Change" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="150"></GridColumn>
+
+            </GridColumns>
+        </SfGrid>
+    </div>
+}
