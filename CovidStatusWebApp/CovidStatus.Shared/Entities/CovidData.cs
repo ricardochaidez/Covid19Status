@@ -14,8 +14,8 @@ namespace CovidStatus.Shared.Entities
         public string County { get; set; }
         public int NewCountConfirmed { get; set; }
         public DateTime Date { get; set; }
-        public decimal? RateChange { get; set; }
+        public decimal? SevenDayMovingRateChange { get; set; }
         public decimal? SevenDayMovingAverage { get; set; }
-        public decimal? CovidCasesPerOneHundredThousand { get; set; }
+        public decimal? SevenDayMovingCasesPerOneHundredThousand { get; set; }
     }
 }

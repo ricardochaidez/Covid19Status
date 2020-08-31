@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 
 namespace CovidStatus.Server.ConfigurationSettings
 {
@@ -11,14 +12,26 @@ namespace CovidStatus.Server.ConfigurationSettings
                 .Build();
 
             LoadGeneralSettings(config);
-            LoadConsultantSOQAPI(config);
+            LoadCovidStatusAPI(config);
             LoadSyncfusionSettings(config);
+            LoadRiskLevelSettings(config);
         }
         private void LoadGeneralSettings(IConfiguration config)
         {
             AppConfigurationSettings.Environment = config.GetSection("Environment").Value;
         }
-        private void LoadConsultantSOQAPI(IConfiguration config)
+        private void LoadRiskLevelSettings(IConfiguration config)
+        {
+            AppConfigurationSettings.MinimalMin = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("MinimalMin").Value);
+            AppConfigurationSettings.MinimalMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("MinimalMax").Value);
+            AppConfigurationSettings.ModerateMin = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("ModerateMin").Value);
+            AppConfigurationSettings.ModerateMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("ModerateMax").Value);
+            AppConfigurationSettings.SubstantialMin = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("SubstantialMin").Value);
+            AppConfigurationSettings.SubstantialMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("SubstantialMax").Value);
+            AppConfigurationSettings.WidespreadMin = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("WidespreadMin").Value);
+            AppConfigurationSettings.WidespreadMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("WidespreadMax").Value);
+        }
+        private void LoadCovidStatusAPI(IConfiguration config)
         {
             AppConfigurationSettings.CovidDataAPIClientAddress = config.GetSection("CovidDataAPIClientAddress").Value;
         }

@@ -4,6 +4,7 @@
 @using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.DropDowns
 @using CovidStatus.Shared.Entities
+@using CovidStatus.Shared.Enum
 
 @inherits CovidStatus.Server.Pages.Bases.CovidStatusBase
 
@@ -13,40 +14,121 @@
 }
 else
 {
-    <h3>Covid Status Per County</h3>
-
-    <div>
-        <SfDropDownList TValue="byte"
-                        TItem="County"
-                        Placeholder="Select County:"
-                        FloatLabelType="@FloatLabelType.Auto"
-                        AllowFiltering="true"
-                        DataSource="@CountyList"
-                        CssClass="e-bold-label"
-                        Value="@DefaultCounty">
-            <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
-            <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
-        </SfDropDownList>
-
-        <br />
-        <h3>Population: <span>@SelectedCounty.Population.ToString("N0")</span></h3>
+<div class="container">
+    <div class="row justify-content-start">
+        <div class="col-6">
+            Last Update Date: @LastUpdateDate
+        </div>
     </div>
-    <br/>
-    <br/>
-    <div>
-        <SfGrid DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true">
-            <GridPageSettings PageSize="5"></GridPageSettings>
-            <GridColumns>
-                <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.County) HeaderText="County Name" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.TotalCountConfirmed) HeaderText="Total Count Confirmed" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Count Confirmed" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.SevenDayMovingAverage) Format="N2" HeaderText="7 Day Moving Average" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.CovidCasesPerOneHundredThousand) Format="N2" HeaderText="COVID Cases Per 100k Pop" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.RateChange) Format="P2" HeaderText="Rate Change" Width="150"></GridColumn>
-                <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="150"></GridColumn>
-
-            </GridColumns>
-        </SfGrid>
+    <div class="row justify-content-start">
+        <div class="col-4">
+            <SfDropDownList TValue="byte"
+                            TItem="County"
+                            Placeholder="Select County:"
+                            FloatLabelType="@FloatLabelType.Auto"
+                            AllowFiltering="true"
+                            DataSource="@CountyList"
+                            CssClass="e-bold-label"
+                            Value="@DefaultCounty">
+                <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
+                <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
+            </SfDropDownList>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-2">
+            <h3>County:</h3>
+            @SelectedCounty.CountyName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <h3>Population:</h3>
+            @SelectedCounty.Population.ToString("N0")
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <h3>7-Day Moving Averages</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <p>Cases per 100k population:</p>
+            @SelectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage?.ToString("N2")
+        </div>
+        <div class="col-3">
+            <p>Rate Change:</p>
+            @SelectedCounty.SevenDayMovingRateChange?.ToString("P2")
+        </div>
+    </div>
+    @if (SelectedCounty.RiskLevels != null)
+    {
+        <div class="row">
+            <div class="col-6">
+                <h3>Risk Level Tiers</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <h5>Risk Level</h5>
+            </div>
+            <div class="col-3">
+                <h5>Estimated Qualified Date</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <span><p>Widespread</p> @if (SelectedCounty.CurrentRiskLevel == RiskLevel.Widespread){<p> - (Current)</p>}</span>
+            </div>
+            <div class="col-3">
+                @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateQualification)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <span><p>Substantial</p>@if (SelectedCounty.CurrentRiskLevel == RiskLevel.Substantial){<p> - (Current)</p>}</span>
+            </div>
+            <div class="col-3">
+                @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateQualification)
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <span><p>Moderate</p>@if (SelectedCounty.CurrentRiskLevel == RiskLevel.Moderate){<p> - (Current)</p>}</span>
+            </div>
+            <div class="col-3">
+                @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateQualification)
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <span><p>Minimal</p>@if (SelectedCounty.CurrentRiskLevel == RiskLevel.Minimal){<p> - (Current)</p>}</span>
+            </div>
+            <div class="col-3">
+                @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateQualification)
+            </div>
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col">
+            <SfGrid DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true" AllowResizing="true">
+                <GridPageSettings PageSize="7"></GridPageSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Count Confirmed" Width="100"></GridColumn>
+                    <GridColumn HeaderText="7 Day Moving">
+                        <GridColumns>
+                            <GridColumn Field=@nameof(CovidData.SevenDayMovingAverage) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.SevenDayMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.SevenDayMovingRateChange) Format="P2" HeaderText="Rate Change" Width="100"></GridColumn>
+                        </GridColumns>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
 }
