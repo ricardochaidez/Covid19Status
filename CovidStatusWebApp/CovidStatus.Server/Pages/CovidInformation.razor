@@ -51,7 +51,7 @@ else
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>Current Risk Level Based On Cases Per 100k Population:</p>
+                        <h5>Current Risk Level Based On Cases Per 100k Population:</h5>
                         @if (@SelectedCounty.CurrentRiskLevel == RiskLevel.Widespread)
                         {
                             <p class="roundedLabel widespreadBackgroundColor">Widespread</p>
@@ -98,7 +98,7 @@ else
                                 }
                                 else if (SelectedCounty.SevenDayMovingRateChange < 0)
                                 {
-                            <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.SevenDayMovingRateChange.Value.ToString("P2")</p>
+                                    <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.SevenDayMovingRateChange.Value.ToString("P2")</p>
                                 }
                                 else
                                 {
@@ -111,6 +111,11 @@ else
             </div>
         </div>
         <br />        
+        <div class="row">
+            <div class="col">
+                <p>For official county risk level visit the California COVID page: <a target="_blank" href="https://covid19.ca.gov/safer-economy/">COCID19.CA.GOV</a></p>
+            </div>
+        </div>
         <br />
         @if (SelectedCounty.RiskLevels != null)
         {
