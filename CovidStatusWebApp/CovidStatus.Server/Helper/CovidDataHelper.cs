@@ -36,7 +36,7 @@ namespace CovidStatus.Server.Helper
             {
                 decimal? previousDateSevenDayMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.SevenDayMovingAverage;
 
-                decimal? sevenRateChange = null;
+                decimal? sevenRateChange = 0;
                 if (covidRecord.SevenDayMovingAverage != null && previousDateSevenDayMovingAverage != null && previousDateSevenDayMovingAverage != 0)
                 {
                     sevenRateChange = (decimal)covidRecord.SevenDayMovingAverage / (decimal)previousDateSevenDayMovingAverage;
@@ -75,11 +75,12 @@ namespace CovidStatus.Server.Helper
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
+            var defaultDateDisplay = selectedCounty.SevenDayMovingRateChange >= 0 ? "N/A Cases are not declining" :"N/A";
             var riskLevelList = new List<CountyRiskLevel>();
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
 
             foreach (var countyRiskLevel in riskLevelList)
             {
@@ -97,7 +98,10 @@ namespace CovidStatus.Server.Helper
                 DateTime? previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
 
                 if (previousRiskLevelDate == null) continue;
-                countyRiskLevel.EstimateRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(AppConfigurationSettings.CaliforniaWaitTimeRequirement); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+
+                var estimatedRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(AppConfigurationSettings.CaliforniaWaitTimeRequirement); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+                countyRiskLevel.EstimateRiskLevelDateQualification = estimatedRiskLevelDateQualification;
+                countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = $"{estimatedRiskLevelDateQualification:MMMM d, yyyy}";
             }
 
             return riskLevelList;
@@ -105,18 +109,27 @@ namespace CovidStatus.Server.Helper
 
         private void PopulateRiskLevel(CountyRiskLevel countyRiskLevel, decimal? sevenDayMovingCasesPerOneHundredThousandAverage, decimal? sevenDayMovingRateChange, DateTime latestUpdateDate)
         {
-            if (sevenDayMovingCasesPerOneHundredThousandAverage > countyRiskLevel.RiskLelvelCasesMin &&
-                sevenDayMovingCasesPerOneHundredThousandAverage < countyRiskLevel.RiskLelvelCasesMax)
+            if (sevenDayMovingCasesPerOneHundredThousandAverage >= countyRiskLevel.RiskLelvelCasesMin &&
+                sevenDayMovingCasesPerOneHundredThousandAverage <= countyRiskLevel.RiskLelvelCasesMax)
             {
                 countyRiskLevel.IsCurrentRiskLevel = true;
             }
-            var riskLevelDate = EstimateCountyRiskLevelDate(sevenDayMovingCasesPerOneHundredThousandAverage, sevenDayMovingRateChange, countyRiskLevel.RiskLelvelCasesMin, countyRiskLevel.RiskLelvelCasesMax);
+            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(sevenDayMovingCasesPerOneHundredThousandAverage, sevenDayMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
+            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : sevenDayMovingRateChange >= 0 ? "N/A Cases are not declining" : "N/A";
+            countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
             countyRiskLevel.EstimateRiskLevelDateQualification = riskLevelDate;
+            countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
         }
 
-        private DateTime EstimateCountyRiskLevelDate(decimal? sevenDayMovingCasesPerOneHundredThousandAverage, decimal? sevenDayMovingRateChange, decimal riskLelvelCasesMin, decimal riskLelvelCasesMax)
+        private DateTime? EstimateCountyRiskLevelDate(decimal? sevenDayMovingCasesPerOneHundredThousandAverage, decimal? sevenDayMovingRateChange, decimal riskLelvelCasesMax)
         {
+            //Cases are increasing, return
+            if (sevenDayMovingRateChange >= 0)
+            {
+                return null;
+            }
+
             DateTime countyRiskLevelDate = new DateTime(2020, 08, 31); //This is the day California officially started with this risk level
             decimal? casesPerOneHundredThousandAverage = sevenDayMovingCasesPerOneHundredThousandAverage;
             int daysToAdd = 0;
@@ -124,12 +137,7 @@ namespace CovidStatus.Server.Helper
             while (casesPerOneHundredThousandAverage > riskLelvelCasesMax)
             {
                 var casesChange = (decimal)(casesPerOneHundredThousandAverage * (decimal)sevenDayMovingRateChange);
-                //If declining, flip sign to subtract from current cases
-                if (casesChange < 0)
-                {
-                    casesChange = casesChange * -1;
-                }
-                casesPerOneHundredThousandAverage -= casesChange;
+                casesPerOneHundredThousandAverage += casesChange;
                 daysToAdd++;
             }
 

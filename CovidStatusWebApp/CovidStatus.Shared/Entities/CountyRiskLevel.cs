@@ -12,5 +12,7 @@ namespace CovidStatus.Shared.Entities
         public bool IsCurrentRiskLevel { get; set; }
         public DateTime? EstimateRiskLevelDate { get; set; }
         public DateTime? EstimateRiskLevelDateQualification { get; set; }
+        public string EstimateRiskLevelDateDisplay { get; set; }
+        public string EstimateRiskLevelDateQualificationDisplay { get; set; }
     }
 }

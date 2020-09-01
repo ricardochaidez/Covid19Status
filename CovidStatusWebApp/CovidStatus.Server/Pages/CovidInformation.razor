@@ -100,6 +100,10 @@ else
                                 {
                                     <p class="boldFont" style="color: green">@SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
                                 }
+                                else
+                                {
+                                    <p class="boldFont">@SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
+                                }
                             </div>
                         </div>
                     </div>
@@ -133,10 +137,10 @@ else
                         More than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.RiskLelvelCasesMin
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDate)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateDisplay
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateQualification)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row substantialBackgroundLightColor centeredText riskLevelRow">
@@ -147,10 +151,10 @@ else
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMax
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDate)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateDisplay
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateQualification)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row moderateBackgroundLightColor centeredText riskLevelRow">
@@ -161,10 +165,10 @@ else
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMax
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDate)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateDisplay
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateQualification)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row minimalBackgroundLightColor centeredText riskLevelRow">
@@ -175,10 +179,10 @@ else
                         Less than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.RiskLelvelCasesMax
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDate)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateDisplay
                     </div>
                     <div class="col-3 d-flex justify-content-center">
-                        @String.Format("{0:MMMM d, yyyy}", SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateQualification)
+                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
             </div>
