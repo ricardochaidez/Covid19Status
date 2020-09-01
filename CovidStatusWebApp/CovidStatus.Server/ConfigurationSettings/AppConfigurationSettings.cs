@@ -17,5 +17,7 @@
 
         public static decimal WidespreadMin;
         public static decimal WidespreadMax;
+
+        public static int CaliforniaWaitTimeRequirement;
     }
 }

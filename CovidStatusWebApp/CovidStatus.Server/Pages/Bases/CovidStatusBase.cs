@@ -7,6 +7,7 @@ using CovidStatus.Server.Services.Interfaces;
 using CovidStatus.Shared.Entities;
 using CovidStatus.Shared.Enum;
 using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.Grids;
 
 namespace CovidStatus.Server.Pages.Bases
 {
@@ -18,6 +19,7 @@ namespace CovidStatus.Server.Pages.Bases
         public County SelectedCounty { get; set; }
         public byte DefaultCounty { get; set; }
         public DateTime LastUpdateDate { get; set; }
+        public SfGrid<CovidData> CovidDataGrid;
 
         protected override async Task OnInitializedAsync()
         {
@@ -123,7 +125,7 @@ namespace CovidStatus.Server.Pages.Bases
                 DateTime? previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
 
                 if(previousRiskLevelDate == null) continue;
-                countyRiskLevel.EstimateRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(35); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+                countyRiskLevel.EstimateRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(AppConfigurationSettings.CaliforniaWaitTimeRequirement); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
             }
 
             return riskLevelList;
@@ -167,6 +169,13 @@ namespace CovidStatus.Server.Pages.Bases
             var countyID = args.Value;
             SelectedCounty = CountyList.FirstOrDefault(x => x.CountyID == countyID);
             await GetCovidData(SelectedCounty?.CountyName);
+        }
+
+        public async Task ExcelExport()
+        {
+            var exportProperties = new ExcelExportProperties();
+            exportProperties.IncludeHiddenColumn = true;
+            await CovidDataGrid.ExcelExport(exportProperties);
         }
     }
 }
