@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CovidStatus.API\CovidStatus.API.csproj" />
     <ProjectReference Include="..\CovidStatus.Shared\CovidStatus.Shared.csproj" />
   </ItemGroup>
 

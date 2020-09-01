@@ -15,6 +15,7 @@ namespace CovidStatus.Server.ConfigurationSettings
             LoadCovidStatusAPI(config);
             LoadSyncfusionSettings(config);
             LoadRiskLevelSettings(config);
+            LoadAPISettings(config);
         }
         private void LoadGeneralSettings(IConfiguration config)
         {
@@ -31,6 +32,10 @@ namespace CovidStatus.Server.ConfigurationSettings
             AppConfigurationSettings.SubstantialMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("SubstantialMax").Value);
             AppConfigurationSettings.WidespreadMin = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("WidespreadMin").Value);
             AppConfigurationSettings.WidespreadMax = Convert.ToDecimal(config.GetSection("RiskLevel").GetSection("WidespreadMax").Value);
+        }
+        private void LoadAPISettings(IConfiguration config)
+        {
+            API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidOpenDataAddress = config.GetSection("CaliforniaCovidOpenDataAddress").Value;
         }
         private void LoadCovidStatusAPI(IConfiguration config)
         {

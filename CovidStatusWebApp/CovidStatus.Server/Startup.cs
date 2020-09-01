@@ -1,4 +1,6 @@
 using System;
+using CovidStatus.API.Repositories;
+using CovidStatus.API.Repositories.Interface;
 using CovidStatus.Server.ConfigurationSettings;
 using CovidStatus.Server.Services;
 using CovidStatus.Server.Services.Interfaces;
@@ -70,10 +72,14 @@ namespace CovidStatus.Server
 
         private void ConfigureDataServices(IServiceCollection services)
         {
-            services.AddHttpClient<ICovidDataService, CovidDataServiceRestAPI>(client =>
-            {
-                client.BaseAddress = new Uri(AppConfigurationSettings.CovidDataAPIClientAddress);
-            });
+            //REST API
+            //services.AddHttpClient<ICovidDataService, CovidDataServiceRestAPI>(client =>
+            //{
+            //    client.BaseAddress = new Uri(AppConfigurationSettings.CovidDataAPIClientAddress);
+            //});
+
+            services.AddScoped<ICovidDataRepository, CovidDataRepository>();
+            services.AddScoped<ICovidDataService, CovidDataService>();
         }
 
         private void ThirdPartySoftwareRegistration(IServiceCollection services)
