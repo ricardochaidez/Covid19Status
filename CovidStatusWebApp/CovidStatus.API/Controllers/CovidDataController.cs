@@ -23,5 +23,11 @@ namespace CovidStatus.API.Controllers
             }
             return Ok(_covidDataRepository.GetCovidDataByCounty(countyName));
         }
+
+        [HttpGet("countylist")]
+        public IActionResult GetCountyList()
+        {
+            return Ok(_covidDataRepository.GetCountyList());
+        }
     }
 }
