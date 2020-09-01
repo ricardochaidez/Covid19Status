@@ -94,11 +94,11 @@ else
                             <div class="col-6 d-flex justify-content-center centeredText">
                                 @if (SelectedCounty.SevenDayMovingRateChange > 0)
                                 {
-                                    <p class="boldFont" style="color: red">@SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
+                                    <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
                                 }
                                 else if (SelectedCounty.SevenDayMovingRateChange < 0)
                                 {
-                                    <p class="boldFont" style="color: green">@SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
+                            <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.SevenDayMovingRateChange.Value.ToString("P2")</p>
                                 }
                                 else
                                 {
@@ -197,7 +197,7 @@ else
             </div>
         </div>
         <br />
-        <div class="row">
+        <div class="row" style="padding-bottom: 20px">
             <div class="col">
                 <SfGrid @ref="CovidDataGrid" DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true" AllowExcelExport="true" AllowResizing="true">
                     <GridPageSettings PageSize="7"></GridPageSettings>
@@ -217,6 +217,8 @@ else
                 </SfGrid>
             </div>
         </div>
-
+        <div>
+            Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
+        </div>
     </div>
 }
