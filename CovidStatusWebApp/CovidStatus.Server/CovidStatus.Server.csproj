@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Syncfusion.Blazor" Version="18.2.0.55" />
   </ItemGroup>
 

@@ -1,0 +1,51 @@
+﻿.widespreadBackgroundColor {
+    background-color: #802F67;
+}
+.substantialBackgroundColor {
+    background-color: #C43D53;
+}
+.moderateBackgroundColor {
+    background-color: #D97641;
+}
+.minimalBackgroundColor {
+    background-color: #E6B735;
+}
+.widespreadBackgroundLightColor {
+    background-color: #E6D5E1;
+}
+
+.substantialBackgroundLightColor {
+    background-color: #F3D8DD;
+}
+
+.moderateBackgroundLightColor {
+    background-color: #F7E4D9;
+}
+
+.minimalBackgroundLightColor {
+    background-color: #FAF1D7;
+}
+
+.riskLevelRow {
+    padding-top: 10px;
+    margin-bottom: 10px;
+    height: 45px;
+}
+
+.roundedLabel {
+    border-radius: 15px;
+    color: white;
+    width: 120px;
+    text-align: center;
+}
+
+.centeredText {
+    text-align: center;
+}
+.rightAlignText {
+    text-align: right;
+}
+
+.boldFont {
+    font-weight: bold;
+}
