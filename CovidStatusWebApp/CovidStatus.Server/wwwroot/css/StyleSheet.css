@@ -31,11 +31,32 @@
     margin-bottom: 10px;
     height: 45px;
 }
+@media (min-width: 359px) {
+    .riskLevelRow {
+        height: 65px;
+    }
+    .roundedLabel {
+        height: 30px;
+    }
+}
+@media (max-width: 410px) {
+    .riskLevelRow {
+        height: 65px;
+    }
+    .roundedLabel {
+        height: 30px;
+    }
+}
+@media (min-width: 760px) {
+    .riskLevelRow {
+        height: 60px;
+    }
+}
 
 .roundedLabel {
     border-radius: 15px;
     color: white;
-    width: 120px;
+    width: 130px;
     text-align: center;
 }
 

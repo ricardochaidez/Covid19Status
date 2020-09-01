@@ -17,12 +17,12 @@ else
 {
     <div class="container">
         <div class="row justify-content-end">
-            <div class="col-6 rightAlignText">
+            <div class="col rightAlignText">
                 Last Update Date: @String.Format("{0:MMMM d, yyyy}", LastUpdateDate)
             </div>
         </div>
         <div class="row justify-content-start">
-            <div class="col-4">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-5">
                 <SfDropDownList TValue="byte"
                                 TItem="County"
                                 Placeholder="Select County:"
@@ -38,13 +38,13 @@ else
         </div>
         <br />
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                         <h5>County:</h5>
                         <p class="boldFont">@SelectedCounty.CountyName</p>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                         <h5>Population:</h5>
                         <p class="boldFont">@SelectedCounty.Population.ToString("N0")</p>
                     </div>
@@ -71,7 +71,7 @@ else
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <div class="row">
                     <div class="col d-flex justify-content-center centeredText">
                         <h5>7-Day Moving Averages</h5>
@@ -80,18 +80,18 @@ else
                 <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
                     <div class="col">
                         <div class="row">
-                            <div class="col-6 d-flex justify-content-center centeredText">
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
                                 <p class="boldFont">Cases per 100k population:</p>
                             </div>
-                            <div class="col-6 d-flex justify-content-center centeredText">
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
                                 <p class="boldFont">Rate Change:</p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 d-flex justify-content-center centeredText">
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
                                 <p class="boldFont">@SelectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
                             </div>
-                            <div class="col-6 d-flex justify-content-center centeredText">
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
                                 @if (SelectedCounty.SevenDayMovingRateChange > 0)
                                 {
                                     <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
@@ -116,72 +116,57 @@ else
         {
             <div>
                 <div class="row">
-                    <div class="col-3 d-flex justify-content-center centeredText">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
                         <h5>Risk Level</h5>
                     </div>
-                    <div class="col-3 d-flex justify-content-center centeredText">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
                         <h5>New Cases per 100k</h5>
                     </div>
-                    <div class="col-3 d-flex justify-content-center centeredText">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
                         <h5>Estimated Qualified Date</h5>
-                    </div>
-                    <div class="col-3 d-flex justify-content-center centeredText">
-                        <h5>Estimated Qualified Date (With CA risk level waiting time)</h5>
                     </div>
                 </div>
                 <div class="row widespreadBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         <p class="roundedLabel widespreadBackgroundColor">Widespread</p>
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         More than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.RiskLelvelCasesMin
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateDisplay
-                    </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row substantialBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         <p class="roundedLabel substantialBackgroundColor">Substantial</p>
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMax
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateDisplay
-                    </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row moderateBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         <p class="roundedLabel moderateBackgroundColor">Moderate</p>
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMax
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateDisplay
-                    </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
                 <div class="row minimalBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         <p class="roundedLabel minimalBackgroundColor">Minimal</p>
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         Less than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.RiskLelvelCasesMax
                     </div>
-                    <div class="col-3 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateDisplay
-                    </div>
-                    <div class="col-3 d-flex justify-content-center">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                         @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateQualificationDisplay
                     </div>
                 </div>
@@ -189,10 +174,10 @@ else
         }
         <br />
         <div class="row">
-            <div class="col-2">
+            <div class="col-6 col-sm-6 col-md-2 col-lg-2">
                 <h5>COVID Data</h5>
             </div>
-            <div class="col-10 d-flex justify-content-end">
+            <div class="col-6 col-sm-6 col-md-10 col-lg-10 d-flex justify-content-end">
                 <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
             </div>
         </div>
@@ -217,7 +202,7 @@ else
                 </SfGrid>
             </div>
         </div>
-        <div>
+        <div style="padding-top: 10px">
             Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
         </div>
     </div>

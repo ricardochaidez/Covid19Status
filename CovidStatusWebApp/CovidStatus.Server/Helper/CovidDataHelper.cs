@@ -75,7 +75,7 @@ namespace CovidStatus.Server.Helper
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
-            var defaultDateDisplay = selectedCounty.SevenDayMovingRateChange >= 0 ? "N/A Cases are not declining" :"N/A";
+            var defaultDateDisplay = selectedCounty.SevenDayMovingRateChange >= 0 ? "Cases are rising" :"N/A";
             var riskLevelList = new List<CountyRiskLevel>();
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
@@ -116,7 +116,7 @@ namespace CovidStatus.Server.Helper
             }
             DateTime? riskLevelDate = EstimateCountyRiskLevelDate(sevenDayMovingCasesPerOneHundredThousandAverage, sevenDayMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
-            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : sevenDayMovingRateChange >= 0 ? "N/A Cases are not declining" : "N/A";
+            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : sevenDayMovingRateChange >= 0 ? "Cases are rising" : "N/A";
             countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
             countyRiskLevel.EstimateRiskLevelDateQualification = riskLevelDate;
             countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
