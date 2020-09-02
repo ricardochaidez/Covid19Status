@@ -12,6 +12,6 @@ namespace CovidStatus.Shared.Entities
         public decimal? SevenDayMovingCasesPerOneHundredThousandAverage { get; set; }
         public decimal? SevenDayMovingRateChange { get; set; }
         public List<CountyRiskLevel> RiskLevels { get; set; }
-        public RiskLevel CurrentRiskLevel { get; set; }
+        public CountyRiskLevel CurrentRiskLevel { get; set; }
     }
 }

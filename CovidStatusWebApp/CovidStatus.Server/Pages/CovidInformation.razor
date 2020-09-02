@@ -52,19 +52,19 @@ else
                 <div class="row">
                     <div class="col">
                         <h5>Current Risk Level Based On Cases Per 100k Population:</h5>
-                        @if (@SelectedCounty.CurrentRiskLevel == RiskLevel.Widespread)
+                        @if (@SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Widespread)
                         {
                             <p class="roundedLabel widespreadBackgroundColor">Widespread</p>
                         }
-                        else if (@SelectedCounty.CurrentRiskLevel == RiskLevel.Substantial)
+                        else if (@SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Substantial)
                         {
                             <p class="roundedLabel substantialBackgroundColor">Substantial</p>
                         }
-                        else if (@SelectedCounty.CurrentRiskLevel == RiskLevel.Moderate)
+                        else if (@SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Moderate)
                         {
                             <p class="roundedLabel moderateBackgroundColor">Moderate</p>
                         }
-                        else if (@SelectedCounty.CurrentRiskLevel == RiskLevel.Minimal)
+                        else if (@SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Minimal)
                         {
                             <p class="roundedLabel minimalBackgroundColor">Minimal</p>
                         }

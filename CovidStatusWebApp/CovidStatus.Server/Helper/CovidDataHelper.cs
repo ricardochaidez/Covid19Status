@@ -87,7 +87,7 @@ namespace CovidStatus.Server.Helper
                 PopulateRiskLevel(countyRiskLevel, selectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage, selectedCounty.SevenDayMovingRateChange, lastUpdateDate);
             }
 
-            selectedCounty.CurrentRiskLevel = riskLevelList.FirstOrDefault(x => x.IsCurrentRiskLevel)?.RiskLevel ?? RiskLevel.Widespread;
+            selectedCounty.CurrentRiskLevel = riskLevelList.FirstOrDefault(x => x.IsCurrentRiskLevel) ?? new CountyRiskLevel {RiskLevel = RiskLevel.Widespread};
 
             //California guideline date requirement
             foreach (var countyRiskLevel in riskLevelList.OrderByDescending(x => x.RiskLevelOrder))
@@ -96,10 +96,20 @@ namespace CovidStatus.Server.Helper
                 if (previousRiskLevel == null) continue;
 
                 DateTime? previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
-
+                
+                //Use current county's risk level date for previous levels and do not add more days to estimate
+                int daysToAdd = 0;
+                if (previousRiskLevel.RiskLevelOrder > selectedCounty.CurrentRiskLevel.RiskLevelOrder)
+                {
+                    previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDateQualification;
+                }
+                else
+                {
+                    daysToAdd = AppConfigurationSettings.CaliforniaWaitTimeRequirement;
+                }
                 if (previousRiskLevelDate == null) continue;
 
-                var estimatedRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(AppConfigurationSettings.CaliforniaWaitTimeRequirement); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+                var estimatedRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(daysToAdd); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
                 countyRiskLevel.EstimateRiskLevelDateQualification = estimatedRiskLevelDateQualification;
                 countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = $"{estimatedRiskLevelDateQualification:MMMM d, yyyy}";
             }
