@@ -95,21 +95,21 @@ namespace CovidStatus.Server.Helper
                 var previousRiskLevel = riskLevelList.FirstOrDefault(x => x.RiskLevelOrder == (countyRiskLevel.RiskLevelOrder + 1));
                 if (previousRiskLevel == null) continue;
 
-                DateTime? previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
+                DateTime? estimateRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
                 
                 //Use current county's risk level date for previous levels and do not add more days to estimate
                 int daysToAdd = 0;
                 if (previousRiskLevel.RiskLevelOrder > selectedCounty.CurrentRiskLevel.RiskLevelOrder)
                 {
-                    previousRiskLevelDate = countyRiskLevel.EstimateRiskLevelDateQualification;
+                    estimateRiskLevelDate = countyRiskLevel.EstimateRiskLevelDateQualification;
                 }
                 else
                 {
                     daysToAdd = AppConfigurationSettings.CaliforniaWaitTimeRequirement;
                 }
-                if (previousRiskLevelDate == null) continue;
+                if (estimateRiskLevelDate == null) continue;
 
-                var estimatedRiskLevelDateQualification = previousRiskLevelDate.Value.AddDays(daysToAdd); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+                var estimatedRiskLevelDateQualification = estimateRiskLevelDate.Value.AddDays(daysToAdd); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
                 countyRiskLevel.EstimateRiskLevelDateQualification = estimatedRiskLevelDateQualification;
                 countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = $"{estimatedRiskLevelDateQualification:MMMM d, yyyy}";
             }
@@ -140,7 +140,7 @@ namespace CovidStatus.Server.Helper
                 return null;
             }
 
-            DateTime countyRiskLevelDate = new DateTime(2020, 08, 31); //This is the day California officially started with this risk level
+            DateTime countyRiskLevelDate = DateTime.Today;
             decimal? casesPerOneHundredThousandAverage = sevenDayMovingCasesPerOneHundredThousandAverage;
             int daysToAdd = 0;
 
