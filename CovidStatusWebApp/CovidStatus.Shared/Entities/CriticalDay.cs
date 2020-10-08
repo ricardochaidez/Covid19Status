@@ -1,4 +1,4 @@
-﻿namespace CovidStatus.Shared.Enum
+﻿namespace CovidStatus.Shared.Entities
 {
     public class CriticalDay
     {

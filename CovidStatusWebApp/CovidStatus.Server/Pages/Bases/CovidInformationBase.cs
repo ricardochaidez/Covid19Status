@@ -6,7 +6,6 @@ using CovidStatus.Server.ConfigurationSettings;
 using CovidStatus.Server.Helper;
 using CovidStatus.Server.Services.Interfaces;
 using CovidStatus.Shared.Entities;
-using CovidStatus.Shared.Enum;
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.Grids;
 
