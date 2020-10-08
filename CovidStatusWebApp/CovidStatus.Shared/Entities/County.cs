@@ -8,9 +8,9 @@ namespace CovidStatus.Shared.Entities
         public byte CountyID { get; set; }
         public string CountyName { get; set; }
         public int Population { get; set; }
-        public decimal? SevenDayMovingCasesAverage { get; set; }
-        public decimal? SevenDayMovingCasesPerOneHundredThousandAverage { get; set; }
-        public decimal? SevenDayMovingRateChange { get; set; }
+        public decimal? CriticalDaysMovingCasesAverage { get; set; }
+        public decimal? CriticalDaysMovingCasesPerOneHundredThousandAverage { get; set; }
+        public decimal? CriticalDaysMovingRateChange { get; set; }
         public List<CountyRiskLevel> RiskLevels { get; set; }
         public CountyRiskLevel CurrentRiskLevel { get; set; }
     }

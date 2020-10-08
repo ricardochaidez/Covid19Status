@@ -7,7 +7,7 @@
 @using CovidStatus.Shared.Entities
 @using CovidStatus.Shared.Enum
 
-@inherits CovidStatus.Server.Pages.Bases.CovidStatusBase
+@inherits CovidStatus.Server.Pages.Bases.CovidInformationBase
 
 @if (SelectedCounty == null || CovidDataList == null)
 {
@@ -21,7 +21,7 @@ else
                 Last Update Date: @String.Format("{0:MMMM d, yyyy}", LastUpdateDate)
             </div>
         </div>
-        <div class="row justify-content-start">
+        <div class="row justify-content-between">
             <div class="col-12 col-sm-12 col-md-6 col-lg-5">
                 <SfDropDownList TValue="byte"
                                 TItem="County"
@@ -33,6 +33,19 @@ else
                                 Value="@DefaultCounty">
                     <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
                     <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
+                </SfDropDownList>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                <SfDropDownList TValue="int"
+                                TItem="CriticalDay"
+                                Placeholder="Days Moving Average:"
+                                FloatLabelType="@FloatLabelType.Auto"
+                                AllowFiltering="true"
+                                DataSource="@CriticalDayList"
+                                CssClass="e-bold-label"
+                                Value="@DefaultCriticalDaysCount">
+                    <DropDownListFieldSettings Text="CriticalDayCount" Value="CriticalDayCount"></DropDownListFieldSettings>
+                    <DropDownListEvents TValue="int" ValueChange="OnCriticalDaysChanged"></DropDownListEvents>
                 </SfDropDownList>
             </div>
         </div>
@@ -74,7 +87,7 @@ else
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <div class="row">
                     <div class="col d-flex justify-content-center centeredText">
-                        <h5>7-Day Moving Averages</h5>
+                        <h5>@CriticalDaysMessage</h5>
                     </div>
                 </div>
                 <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
@@ -89,20 +102,20 @@ else
                         </div>
                         <div class="row">
                             <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                <p class="boldFont">@SelectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
+                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
                             </div>
                             <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                @if (SelectedCounty.SevenDayMovingRateChange > 0)
+                                @if (SelectedCounty.CriticalDaysMovingRateChange > 0)
                                 {
-                                    <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
+                                    <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
                                 }
-                                else if (SelectedCounty.SevenDayMovingRateChange < 0)
+                                else if (SelectedCounty.CriticalDaysMovingRateChange < 0)
                                 {
-                                    <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.SevenDayMovingRateChange.Value.ToString("P2")</p>
+                                    <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingRateChange.Value.ToString("P2")</p>
                                 }
                                 else
                                 {
-                                    <p class="boldFont">@SelectedCounty.SevenDayMovingRateChange?.ToString("P2")</p>
+                                    <p class="boldFont">@SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
                                 }
                             </div>
                         </div>
@@ -190,24 +203,24 @@ else
         <div class="row" style="padding-bottom: 20px">
             <div class="col">
                 <SfGrid @ref="CovidDataGrid" DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true" AllowExcelExport="true" AllowResizing="true">
-                    <GridPageSettings PageSize="7"></GridPageSettings>
+                    <GridPageSettings PageSize="@CriticalDaysCount"></GridPageSettings>
                     <GridColumns>
                         <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
                         <GridColumn Field=@nameof(CovidData.County) Visible="false" HeaderText="County Name" Width="120"></GridColumn>
                         <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="100"></GridColumn>
                         <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Count Confirmed" Width="100"></GridColumn>
-                        <GridColumn HeaderText="7 Day Moving">
+                        <GridColumn HeaderText="@CriticalDaysMessage">
                             <GridColumns>
-                                <GridColumn Field=@nameof(CovidData.SevenDayMovingAverage) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.SevenDayMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.SevenDayMovingRateChange) Format="P2" HeaderText="Rate Change" Width="100"></GridColumn>
+                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverage) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
+                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
+                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingRateChange) Format="P2" HeaderText="Rate Change" Width="100"></GridColumn>
                             </GridColumns>
                         </GridColumn>
                     </GridColumns>
                 </SfGrid>
             </div>
         </div>
-        <div style="padding-top: 10px">
+        <div style="padding-top: 10px; padding-bottom: 20px;">
             Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
         </div>
     </div>

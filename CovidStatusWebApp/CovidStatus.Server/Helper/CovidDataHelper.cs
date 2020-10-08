@@ -9,73 +9,73 @@ namespace CovidStatus.Server.Helper
 {
     public class CovidDataHelper
     {
-        public void PopulateAggregatesCovidData(List<CovidData> covidRecords, County selectedCounty)
+        public void PopulateAggregatesCovidData(List<CovidData> covidRecords, County selectedCounty, int criticalDaysCount)
         {
             //Get seven day moving
             foreach (var covidRecord in covidRecords)
             {
-                var lastSevenDayCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-7) && x.Date <= covidRecord.Date).ToList();
+                var lastcriticalDaysCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-(criticalDaysCount)) && x.Date <= covidRecord.Date).ToList();
 
-                decimal? sevenDayMovingSum = 0;
+                decimal? criticalDaysMovingSum = 0;
                 int count = 0;
-                foreach (var record in lastSevenDayCovidData)
+                foreach (var record in lastcriticalDaysCovidData)
                 {
-                    sevenDayMovingSum = sevenDayMovingSum + record.NewCountConfirmed;
+                    criticalDaysMovingSum = criticalDaysMovingSum + record.NewCountConfirmed;
                     count++;
                 }
 
-                decimal? sevenDayMovingAverage = sevenDayMovingSum / (count == 0 ? 1 : count);
-                decimal? covidCasesPerOneHundredThousand = (decimal)(sevenDayMovingAverage / ((decimal)selectedCounty.Population / (decimal)100000));
+                decimal? criticalDaysMovingAverage = criticalDaysMovingSum / (count == 0 ? 1 : count);
+                decimal? covidCasesPerOneHundredThousand = (decimal)(criticalDaysMovingAverage / ((decimal)selectedCounty.Population / (decimal)100000));
 
-                covidRecord.SevenDayMovingAverage = sevenDayMovingAverage;
-                covidRecord.SevenDayMovingCasesPerOneHundredThousand = covidCasesPerOneHundredThousand;
+                covidRecord.CriticalDaysMovingAverage = criticalDaysMovingAverage;
+                covidRecord.CriticalDaysMovingCasesPerOneHundredThousand = covidCasesPerOneHundredThousand;
             }
 
             //Get rate change based on seven/fourteen day moving
             foreach (var covidRecord in covidRecords)
             {
-                decimal? previousDateSevenDayMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.SevenDayMovingAverage;
+                decimal? previousDatecriticalDaysMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverage;
 
                 decimal? sevenRateChange = 0;
-                if (covidRecord.SevenDayMovingAverage != null && previousDateSevenDayMovingAverage != null && previousDateSevenDayMovingAverage != 0)
+                if (covidRecord.CriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != 0)
                 {
-                    sevenRateChange = (decimal)covidRecord.SevenDayMovingAverage / (decimal)previousDateSevenDayMovingAverage;
+                    sevenRateChange = (decimal)covidRecord.CriticalDaysMovingAverage / (decimal)previousDatecriticalDaysMovingAverage;
                     sevenRateChange = sevenRateChange - 1;
                 }
-                covidRecord.SevenDayMovingRateChange = sevenRateChange;
+                covidRecord.CriticalDaysMovingRateChange = sevenRateChange;
             }
         }
 
-        public void PopulateCountyAggregates(List<CovidData> covidRecords, County selectedCounty, DateTime lastUpdateDate)
+        public void PopulateCountyAggregates(List<CovidData> covidRecords, County selectedCounty, DateTime lastUpdateDate, int criticalDaysCount)
         {
             //Get seven day moving averages
-            var sevenDayCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-7) && x.Date <= lastUpdateDate).ToList();
+            var criticalDaysCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-(criticalDaysCount)) && x.Date <= lastUpdateDate).ToList();
 
-            decimal? sevenDayMovingCasesPerOneHundredThousandSum = 0;
-            decimal? sevenDayMovingRateChangeSum = 0;
-            decimal? sevenDayMovingCasesSum = 0;
-            int sevenDaycount = 0;
-            foreach (var record in sevenDayCovidData)
+            decimal? criticalDaysMovingCasesPerOneHundredThousandSum = 0;
+            decimal? criticalDaysMovingRateChangeSum = 0;
+            decimal? criticalDaysMovingCasesSum = 0;
+            int criticalDayscount = 0;
+            foreach (var record in criticalDaysCovidData)
             {
-                sevenDayMovingCasesPerOneHundredThousandSum = sevenDayMovingCasesPerOneHundredThousandSum + record.SevenDayMovingCasesPerOneHundredThousand;
-                sevenDayMovingRateChangeSum = sevenDayMovingRateChangeSum + record.SevenDayMovingRateChange;
-                sevenDayMovingCasesSum = sevenDayMovingCasesSum + record.SevenDayMovingAverage;
-                sevenDaycount++;
+                criticalDaysMovingCasesPerOneHundredThousandSum = criticalDaysMovingCasesPerOneHundredThousandSum + record.CriticalDaysMovingCasesPerOneHundredThousand;
+                criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingRateChange;
+                criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.CriticalDaysMovingAverage;
+                criticalDayscount++;
             }
 
-            decimal? sevenDayMovingCasesPerOneHundredThousandAverage = sevenDayMovingCasesPerOneHundredThousandSum / (sevenDaycount == 0 ? 1 : sevenDaycount);
-            decimal? sevenDayMovingRateChangeAverage = sevenDayMovingRateChangeSum / (sevenDaycount == 0 ? 1 : sevenDaycount);
-            decimal? sevenDayMovingCasesAverage = sevenDayMovingCasesSum / (sevenDaycount == 0 ? 1 : sevenDaycount);
+            decimal? criticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
+            decimal? criticalDaysMovingRateChangeAverage = criticalDaysMovingRateChangeSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
+            decimal? criticalDaysMovingCasesAverage = criticalDaysMovingCasesSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
 
-            selectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage = sevenDayMovingCasesPerOneHundredThousandAverage;
-            selectedCounty.SevenDayMovingRateChange = sevenDayMovingRateChangeAverage;
-            selectedCounty.SevenDayMovingCasesAverage = sevenDayMovingCasesAverage;
+            selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
+            selectedCounty.CriticalDaysMovingRateChange = criticalDaysMovingRateChangeAverage;
+            selectedCounty.CriticalDaysMovingCasesAverage = criticalDaysMovingCasesAverage;
             selectedCounty.RiskLevels = GetCountyRiskLevels(selectedCounty, lastUpdateDate);
         }
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
-            var defaultDateDisplay = selectedCounty.SevenDayMovingRateChange >= 0 ? "Cases are rising" :"N/A";
+            var defaultDateDisplay = selectedCounty.CriticalDaysMovingRateChange >= 0 ? "Cases are rising" : "N/A";
             var riskLevelList = new List<CountyRiskLevel>();
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
@@ -84,10 +84,10 @@ namespace CovidStatus.Server.Helper
 
             foreach (var countyRiskLevel in riskLevelList)
             {
-                PopulateRiskLevel(countyRiskLevel, selectedCounty.SevenDayMovingCasesPerOneHundredThousandAverage, selectedCounty.SevenDayMovingRateChange, lastUpdateDate);
+                PopulateRiskLevel(countyRiskLevel, selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage, selectedCounty.CriticalDaysMovingRateChange, lastUpdateDate);
             }
 
-            selectedCounty.CurrentRiskLevel = riskLevelList.FirstOrDefault(x => x.IsCurrentRiskLevel) ?? new CountyRiskLevel {RiskLevel = RiskLevel.Widespread};
+            selectedCounty.CurrentRiskLevel = riskLevelList.FirstOrDefault(x => x.IsCurrentRiskLevel) ?? new CountyRiskLevel { RiskLevel = RiskLevel.Widespread };
 
             //California guideline date requirement
             foreach (var countyRiskLevel in riskLevelList.OrderByDescending(x => x.RiskLevelOrder))
@@ -96,7 +96,7 @@ namespace CovidStatus.Server.Helper
                 if (previousRiskLevel == null) continue;
 
                 DateTime? estimateRiskLevelDate = countyRiskLevel.EstimateRiskLevelDate > previousRiskLevel.EstimateRiskLevelDateQualification ? countyRiskLevel.EstimateRiskLevelDate : previousRiskLevel.EstimateRiskLevelDateQualification;
-                
+
                 //Use current county's risk level date for previous levels and do not add more days to estimate
                 int daysToAdd = 0;
                 if (previousRiskLevel.RiskLevelOrder > selectedCounty.CurrentRiskLevel.RiskLevelOrder)
@@ -117,36 +117,36 @@ namespace CovidStatus.Server.Helper
             return riskLevelList;
         }
 
-        private void PopulateRiskLevel(CountyRiskLevel countyRiskLevel, decimal? sevenDayMovingCasesPerOneHundredThousandAverage, decimal? sevenDayMovingRateChange, DateTime latestUpdateDate)
+        private void PopulateRiskLevel(CountyRiskLevel countyRiskLevel, decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, decimal? criticalDaysMovingRateChange, DateTime latestUpdateDate)
         {
-            if (sevenDayMovingCasesPerOneHundredThousandAverage >= countyRiskLevel.RiskLelvelCasesMin &&
-                sevenDayMovingCasesPerOneHundredThousandAverage <= countyRiskLevel.RiskLelvelCasesMax)
+            if (criticalDaysMovingCasesPerOneHundredThousandAverage >= countyRiskLevel.RiskLelvelCasesMin &&
+                criticalDaysMovingCasesPerOneHundredThousandAverage <= countyRiskLevel.RiskLelvelCasesMax)
             {
                 countyRiskLevel.IsCurrentRiskLevel = true;
             }
-            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(sevenDayMovingCasesPerOneHundredThousandAverage, sevenDayMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
+            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
-            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : sevenDayMovingRateChange >= 0 ? "Cases are rising" : "N/A";
+            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : criticalDaysMovingRateChange >= 0 ? "Cases are rising" : "N/A";
             countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
             countyRiskLevel.EstimateRiskLevelDateQualification = riskLevelDate;
             countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
         }
 
-        private DateTime? EstimateCountyRiskLevelDate(decimal? sevenDayMovingCasesPerOneHundredThousandAverage, decimal? sevenDayMovingRateChange, decimal riskLelvelCasesMax)
+        private DateTime? EstimateCountyRiskLevelDate(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, decimal? criticalDaysMovingRateChange, decimal riskLelvelCasesMax)
         {
             //Cases are increasing, return
-            if (sevenDayMovingRateChange >= 0)
+            if (criticalDaysMovingRateChange >= 0)
             {
                 return null;
             }
 
             DateTime countyRiskLevelDate = DateTime.Today;
-            decimal? casesPerOneHundredThousandAverage = sevenDayMovingCasesPerOneHundredThousandAverage;
+            decimal? casesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
             int daysToAdd = 0;
 
             while (casesPerOneHundredThousandAverage > riskLelvelCasesMax)
             {
-                var casesChange = (decimal)(casesPerOneHundredThousandAverage * (decimal)sevenDayMovingRateChange);
+                var casesChange = (decimal)(casesPerOneHundredThousandAverage * (decimal)criticalDaysMovingRateChange);
                 casesPerOneHundredThousandAverage += casesChange;
                 daysToAdd++;
             }

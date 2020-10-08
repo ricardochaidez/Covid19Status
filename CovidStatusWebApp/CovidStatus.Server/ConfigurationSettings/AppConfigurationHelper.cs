@@ -21,6 +21,7 @@ namespace CovidStatus.Server.ConfigurationSettings
         {
             AppConfigurationSettings.Environment = config.GetSection("Environment").Value;
             AppConfigurationSettings.CaliforniaWaitTimeRequirement = Convert.ToInt32(config.GetSection("CaliforniaWaitTimeRequirement").Value);
+            AppConfigurationSettings.CriticalDaysCount = Convert.ToInt32(config.GetSection("CriticalDaysCount").Value);
         }
         private void LoadRiskLevelSettings(IConfiguration config)
         {

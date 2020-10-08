@@ -19,5 +19,6 @@
         public static decimal WidespreadMax;
 
         public static int CaliforniaWaitTimeRequirement;
+        public static int CriticalDaysCount;
     }
 }
