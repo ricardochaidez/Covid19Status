@@ -32,6 +32,11 @@ namespace CovidStatus.Server.Pages.Bases
             ChartData = await GetChartData(CovidDataList);
         }
 
+        protected override async Task OnParametersSetAsync()
+        {
+            ChartData = await GetChartData(CovidDataList);
+        }
+
         public void ChartLoad(ILoadedEventArgs args)
         {
             args.Theme = ChartTheme.Material;
