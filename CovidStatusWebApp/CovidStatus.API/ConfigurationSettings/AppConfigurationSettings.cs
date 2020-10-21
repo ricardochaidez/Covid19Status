@@ -3,5 +3,6 @@
     public class AppConfigurationSettings
     {
         public static string CaliforniaCovidOpenDataAddress;
+        public static string CaliforniaCovidHospitalOpenDataAddress;
     }
 }

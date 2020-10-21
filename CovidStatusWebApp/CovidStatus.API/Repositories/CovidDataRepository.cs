@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using CovidStatus.API.ConfigurationSettings;
+using CovidStatus.API.Entities;
 using CovidStatus.API.Repositories.Interface;
 using CovidStatus.Shared.Entities;
 using Newtonsoft.Json;
@@ -14,15 +15,14 @@ namespace CovidStatus.API.Repositories
 
         public List<CovidData> GetCovidDataByCounty(string countyName)
         {
-            string californiaOpenDataCovidRequest =
-                $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit=100&q={countyName}&sort=date%20desc";
-            
+            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit=100&q={countyName}&sort=date%20desc";
+
             string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
 
-            Root covidDataDeserialized = JsonConvert.DeserializeObject<Root>(covidDataJson);
+            CovidDataEntity.Root covidDataDeserialized = JsonConvert.DeserializeObject<CovidDataEntity.Root>(covidDataJson);
 
             var covidDataList = new List<CovidData>();
-            foreach (var covidRecord in covidDataDeserialized.result.records)
+            foreach (CovidDataEntity.Record covidRecord in covidDataDeserialized.result.records)
             {
                 var covidData = new CovidData();
                 covidData.ID = covidRecord._id;
@@ -33,10 +33,34 @@ namespace CovidStatus.API.Repositories
                 covidData.County = covidRecord.county;
                 covidData.NewCountConfirmed = covidRecord.newcountconfirmed;
                 covidData.Date = covidRecord.date;
-                covidDataList.Add(covidData);    
+                covidDataList.Add(covidData);
             }
 
+            AddCovidHospitalDataByCounty(covidDataList, countyName);
+
             return covidDataList;
+        }
+
+        private void AddCovidHospitalDataByCounty(List<CovidData> covidData, string countyName)
+        {
+            string californiaOpenDataCovidHospitalRequest = $"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress}&limit=100&q={countyName}&sort=todays_date%20desc";
+
+            string covidHospitalDataJson = client.GetStringAsync(californiaOpenDataCovidHospitalRequest).Result;
+
+            CovidHospitalDataEntity.Root covidDataDeserialized = JsonConvert.DeserializeObject<CovidHospitalDataEntity.Root>(covidHospitalDataJson);
+
+            foreach (CovidHospitalDataEntity.Record hospitalRecord in covidDataDeserialized.result.records)
+            {
+                CovidData covidRecord = covidData.FirstOrDefault(x => x.Date == hospitalRecord.todays_date && x.County == hospitalRecord.county);
+                if (covidRecord == null) continue;
+
+                double? icuCovidPatient = null;
+                if (double.TryParse(hospitalRecord.icu_covid_confirmed_patients.ToString(), out double icuCovidPatientCount))
+                {
+                    icuCovidPatient = icuCovidPatientCount;
+                }
+                covidRecord.ICUCovidPatientCount = icuCovidPatient ?? 0;
+            }
         }
 
         public List<County> GetCountyList()
@@ -102,60 +126,6 @@ namespace CovidStatus.API.Repositories
             countyList.Add(new County { CountyID = 58, CountyName = "Yuba", Population = 78668 });
 
             return countyList;
-        }
-
-
-        private class Info
-        {
-            public string notes { get; set; }
-            public string type_override { get; set; }
-            public string label { get; set; }
-        }
-
-        private class Field
-        {
-            public string type { get; set; }
-            public string id { get; set; }
-            public Info info { get; set; }
-        }
-
-        private class Record
-        {
-            public double totalcountconfirmed { get; set; }
-            public int newcountdeaths { get; set; }
-            public double totalcountdeaths { get; set; }
-            public double rank { get; set; }
-            public string county { get; set; }
-            public int newcountconfirmed { get; set; }
-            public DateTime date { get; set; }
-            public int _id { get; set; }
-        }
-
-        private class Links
-        {
-            public string start { get; set; }
-            public string next { get; set; }
-        }
-
-        private class Result
-        {
-            public string sort { get; set; }
-            public bool include_total { get; set; }
-            public string resource_id { get; set; }
-            public List<Field> fields { get; set; }
-            public string records_format { get; set; }
-            public string q { get; set; }
-            public List<Record> records { get; set; }
-            public int limit { get; set; }
-            public Links _links { get; set; }
-            public int total { get; set; }
-        }
-
-        private class Root
-        {
-            public string help { get; set; }
-            public bool success { get; set; }
-            public Result result { get; set; }
         }
     }
 }

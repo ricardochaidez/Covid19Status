@@ -8,6 +8,7 @@ using CovidStatus.Server.Services.Interfaces;
 using CovidStatus.Shared.Entities;
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.Grids;
+using Syncfusion.Blazor.Navigations;
 
 namespace CovidStatus.Server.Pages.Bases
 {
@@ -26,6 +27,7 @@ namespace CovidStatus.Server.Pages.Bases
 
         public DateTime LastUpdateDate { get; set; }
         public SfGrid<CovidData> CovidDataGrid;
+        public SfTab TabObj;
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,7 +61,7 @@ namespace CovidStatus.Server.Pages.Bases
             covidDataHelper.PopulateCountyAggregates(covidRecords, SelectedCounty, lastUpdate, criticalDaysCount);
 
             CovidDataList = covidRecords;
-
+            await RefreshChartTabs();
             StateHasChanged();
         }
 
@@ -108,6 +110,20 @@ namespace CovidStatus.Server.Pages.Bases
             var exportProperties = new ExcelExportProperties();
             exportProperties.IncludeHiddenColumn = true;
             await CovidDataGrid.ExcelExport(exportProperties);
+        }
+
+        //Implementing this due to component not being refreshed on StateHasChanged
+        private async Task RefreshChartTabs()
+        {
+            if (TabObj == null) return;
+
+            var selectedTabIndex = TabObj.SelectedItem;
+            var numberOfTabsIndex = (TabObj.Items.Count) - 1;
+            var differentTabThanSelected = selectedTabIndex == 0 && numberOfTabsIndex > selectedTabIndex ? (selectedTabIndex + 1) : 0;
+            await TabObj.Select(differentTabThanSelected);
+            StateHasChanged();
+            await TabObj.Select(selectedTabIndex);
+            StateHasChanged();
         }
     }
 }

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\CovidStatus.Shared\CovidStatus.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\syncfusion\material\" />
+  </ItemGroup>
+
 </Project>

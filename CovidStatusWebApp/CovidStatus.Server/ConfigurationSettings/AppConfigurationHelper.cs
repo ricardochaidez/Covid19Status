@@ -37,6 +37,7 @@ namespace CovidStatus.Server.ConfigurationSettings
         private void LoadAPISettings(IConfiguration config)
         {
             API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidOpenDataAddress = config.GetSection("CaliforniaCovidOpenDataAddress").Value;
+            API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress = config.GetSection("CaliforniaCovidHospitalOpenDataAddress").Value;
         }
         private void LoadCovidStatusAPI(IConfiguration config)
         {

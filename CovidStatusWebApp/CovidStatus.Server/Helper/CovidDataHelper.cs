@@ -16,30 +16,36 @@ namespace CovidStatus.Server.Helper
             {
                 var lastcriticalDaysCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-(criticalDaysCount)) && x.Date <= covidRecord.Date).ToList();
 
-                decimal? criticalDaysMovingSum = 0;
+                decimal? criticalDaysMovingCasesSum = 0;
+                decimal? criticalDaysMovingDeathsSum = 0;
                 int count = 0;
                 foreach (var record in lastcriticalDaysCovidData)
                 {
-                    criticalDaysMovingSum = criticalDaysMovingSum + record.NewCountConfirmed;
+                    criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.NewCountConfirmed;
+                    criticalDaysMovingDeathsSum = criticalDaysMovingDeathsSum + record.NewCountDeaths;
                     count++;
                 }
 
-                decimal? criticalDaysMovingAverage = criticalDaysMovingSum / (count == 0 ? 1 : count);
-                decimal? covidCasesPerOneHundredThousand = (decimal)(criticalDaysMovingAverage / ((decimal)selectedCounty.Population / (decimal)100000));
+                decimal? criticalDaysMovingAverageCases = criticalDaysMovingCasesSum / (count == 0 ? 1 : count);
+                decimal? criticalDaysMovingAverageDeaths = criticalDaysMovingDeathsSum / (count == 0 ? 1 : count);
+                decimal? covidCasesPerOneHundredThousand = (decimal)(criticalDaysMovingAverageCases / ((decimal)selectedCounty.Population / (decimal)100000));
+                decimal? covidDeathsPerOneHundredThousand = (decimal)(criticalDaysMovingAverageDeaths / ((decimal)selectedCounty.Population / (decimal)100000));
 
-                covidRecord.CriticalDaysMovingAverage = criticalDaysMovingAverage;
+                covidRecord.CriticalDaysMovingAverageCases = criticalDaysMovingAverageCases;
+                covidRecord.CriticalDaysMovingAverageDeaths = criticalDaysMovingAverageDeaths;
                 covidRecord.CriticalDaysMovingCasesPerOneHundredThousand = covidCasesPerOneHundredThousand;
+                covidRecord.CriticalDaysMovingDeathsPerOneHundredThousand = covidDeathsPerOneHundredThousand;
             }
 
             //Get rate change based on seven/fourteen day moving
             foreach (var covidRecord in covidRecords)
             {
-                decimal? previousDatecriticalDaysMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverage;
+                decimal? previousDatecriticalDaysMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverageCases;
 
                 decimal? sevenRateChange = 0;
-                if (covidRecord.CriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != 0)
+                if (covidRecord.CriticalDaysMovingAverageCases != null && previousDatecriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != 0)
                 {
-                    sevenRateChange = (decimal)covidRecord.CriticalDaysMovingAverage / (decimal)previousDatecriticalDaysMovingAverage;
+                    sevenRateChange = (decimal)covidRecord.CriticalDaysMovingAverageCases / (decimal)previousDatecriticalDaysMovingAverage;
                     sevenRateChange = sevenRateChange - 1;
                 }
                 covidRecord.CriticalDaysMovingRateChange = sevenRateChange;
@@ -59,7 +65,7 @@ namespace CovidStatus.Server.Helper
             {
                 criticalDaysMovingCasesPerOneHundredThousandSum = criticalDaysMovingCasesPerOneHundredThousandSum + record.CriticalDaysMovingCasesPerOneHundredThousand;
                 criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingRateChange;
-                criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.CriticalDaysMovingAverage;
+                criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.CriticalDaysMovingAverageCases;
                 criticalDayscount++;
             }
 

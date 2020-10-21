@@ -13,7 +13,10 @@ namespace CovidStatus.Shared.Entities
         public int NewCountConfirmed { get; set; }
         public DateTime Date { get; set; }
         public decimal? CriticalDaysMovingRateChange { get; set; }
-        public decimal? CriticalDaysMovingAverage { get; set; }
+        public decimal? CriticalDaysMovingAverageCases { get; set; }
         public decimal? CriticalDaysMovingCasesPerOneHundredThousand { get; set; }
+        public decimal? CriticalDaysMovingDeathsPerOneHundredThousand { get; set; }
+        public decimal? CriticalDaysMovingAverageDeaths { get; set; }
+        public double ICUCovidPatientCount { get; set; }
     }
 }

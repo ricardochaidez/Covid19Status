@@ -38,6 +38,10 @@
     .roundedLabel {
         height: 30px;
     }
+    .column-padding {
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
 }
 @media (max-width: 410px) {
     .riskLevelRow {
@@ -46,10 +50,18 @@
     .roundedLabel {
         height: 30px;
     }
+    .column-padding {
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
 }
 @media (min-width: 760px) {
     .riskLevelRow {
         height: 60px;
+    }
+    .column-padding {
+        padding-right: 20px;
+        padding-bottom: 0;
     }
 }
 
