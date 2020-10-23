@@ -60,22 +60,7 @@ else
                                 <h5>@SelectedCounty.CountyName</h5>
                             </div>
                             <div class="col-6 col-sm-6 col-md-12 col-lg-12 d-flex justify-content-center centeredText">
-                                @if (SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Widespread)
-                                {
-                                    <p class="roundedLabel widespreadBackgroundColor">Widespread</p>
-                                }
-                                else if (SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Substantial)
-                                {
-                                    <p class="roundedLabel substantialBackgroundColor">Substantial</p>
-                                }
-                                else if (SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Moderate)
-                                {
-                                    <p class="roundedLabel moderateBackgroundColor">Moderate</p>
-                                }
-                                else if (SelectedCounty.CurrentRiskLevel.RiskLevel == RiskLevel.Minimal)
-                                {
-                                    <p class="roundedLabel minimalBackgroundColor">Minimal</p>
-                                }
+                                <p class="roundedLabel @SelectedCounty.CurrentRiskLevel.CSSClassBackgroundColor">@SelectedCounty.CurrentRiskLevel.RiskLevelName</p>
                             </div>
                         </div>
                     </div>
@@ -153,50 +138,35 @@ else
                         <h5>Estimated Qualified Date</h5>
                     </div>
                 </div>
-                <div class="row widespreadBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        <p class="roundedLabel widespreadBackgroundColor">Widespread</p>
+                @foreach (var riskLevel in SelectedCounty.RiskLevels.OrderByDescending(x => x.RiskLevelOrder))
+                {
+                    <div class="row @riskLevel.CSSClassLightBackgroundColor centeredText riskLevelRow">
+                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                            <p class="roundedLabel @riskLevel.CSSClassBackgroundColor">Widespread</p>
+                        </div>
+                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                            @if (riskLevel.RiskLevel == RiskLevel.Widespread)
+                            {
+                                <p>More than @riskLevel.RiskLelvelCasesMin</p>
+                            }
+                            else
+                            {
+                                <p>@riskLevel.RiskLelvelCasesMin - @riskLevel.RiskLelvelCasesMax</p>
+                            }
+                        </div>
+                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                            @riskLevel.EstimateRiskLevelDateQualificationDisplay &nbsp;
+                            @if (SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
+                            {
+                                <p style="color: red"><i class="fas fa-arrow-circle-up"></i></p>
+                            }
+                            else if(!SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
+                            {
+                                <p style="color: green"><i class="fas fa-arrow-circle-down"></i></p>
+                            }
+                        </div>
                     </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        More than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.RiskLelvelCasesMin
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Widespread)?.EstimateRiskLevelDateQualificationDisplay
-                    </div>
-                </div>
-                <div class="row substantialBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        <p class="roundedLabel substantialBackgroundColor">Substantial</p>
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.RiskLelvelCasesMax
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Substantial)?.EstimateRiskLevelDateQualificationDisplay
-                    </div>
-                </div>
-                <div class="row moderateBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        <p class="roundedLabel moderateBackgroundColor">Moderate</p>
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMin - @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.RiskLelvelCasesMax
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Moderate)?.EstimateRiskLevelDateQualificationDisplay
-                    </div>
-                </div>
-                <div class="row minimalBackgroundLightColor centeredText riskLevelRow">
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        <p class="roundedLabel minimalBackgroundColor">Minimal</p>
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        Less than @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.RiskLelvelCasesMax
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                        @SelectedCounty.RiskLevels.FirstOrDefault(x => x.RiskLevel == RiskLevel.Minimal)?.EstimateRiskLevelDateQualificationDisplay
-                    </div>
-                </div>
+                }
             </div>
         }
         <br />

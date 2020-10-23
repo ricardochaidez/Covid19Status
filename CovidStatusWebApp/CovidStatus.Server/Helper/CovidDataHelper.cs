@@ -81,14 +81,14 @@ namespace CovidStatus.Server.Helper
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
-            bool areCasesRising = selectedCounty.CriticalDaysMovingRateChange >= 0;
+            selectedCounty.AreCasesRising = selectedCounty.CriticalDaysMovingRateChange >= 0;
 
-            var defaultDateDisplay = areCasesRising ? "Cases are rising" : "N/A";
+            var defaultDateDisplay = selectedCounty.AreCasesRising ? "Cases are rising" : "N/A";
             var riskLevelList = new List<CountyRiskLevel>();
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLevelName = "Minimal", RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "minimalBackgroundColor", CSSClassLightBackgroundColor = "minimalBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLevelName = "Moderate", RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "moderateBackgroundColor", CSSClassLightBackgroundColor = "moderateBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLevelName = "Substantial", RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "substantialBackgroundColor", CSSClassLightBackgroundColor = "substantialBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLevelName = "Widespread", RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "widespreadBackgroundColor", CSSClassLightBackgroundColor = "widespreadBackgroundLightColor" });
 
             foreach (var countyRiskLevel in riskLevelList)
             {
@@ -100,7 +100,7 @@ namespace CovidStatus.Server.Helper
             //California guideline date requirement
             foreach (var countyRiskLevel in riskLevelList.OrderByDescending(x => x.RiskLevelOrder))
             {
-                if (areCasesRising && countyRiskLevel.IsFutureRiskLevel) continue;
+                if (selectedCounty.AreCasesRising && countyRiskLevel.IsFutureRiskLevel) continue;
 
                 var previousRiskLevel = riskLevelList.FirstOrDefault(x => x.RiskLevelOrder == (countyRiskLevel.RiskLevelOrder + 1));
                 if (previousRiskLevel == null) continue;

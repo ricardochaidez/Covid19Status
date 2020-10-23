@@ -13,5 +13,6 @@ namespace CovidStatus.Shared.Entities
         public decimal? CriticalDaysMovingRateChange { get; set; }
         public List<CountyRiskLevel> RiskLevels { get; set; }
         public CountyRiskLevel CurrentRiskLevel { get; set; }
+        public bool AreCasesRising { get; set; }
     }
 }
