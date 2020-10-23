@@ -173,7 +173,7 @@ namespace CovidStatus.Server.Helper
             }
             else
             {
-                countyRiskLevelDate = EstimateCountyRiskLevelDateRisingCases(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
+                countyRiskLevelDate = EstimateCountyRiskLevelDateDecliningCases(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
             }
 
             return countyRiskLevelDate;
@@ -196,7 +196,7 @@ namespace CovidStatus.Server.Helper
             return countyRiskLevelDate.AddDays(daysToAdd);
         }
 
-        private DateTime? EstimateCountyRiskLevelDateDecliningCases(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage,
+        private DateTime EstimateCountyRiskLevelDateDecliningCases(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage,
             decimal? criticalDaysMovingRateChange, decimal riskLelvelCasesMax)
         {
             DateTime countyRiskLevelDate = DateTime.Today;
