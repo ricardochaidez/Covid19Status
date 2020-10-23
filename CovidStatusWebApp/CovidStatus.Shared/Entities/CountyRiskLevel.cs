@@ -10,6 +10,9 @@ namespace CovidStatus.Shared.Entities
         public decimal RiskLelvelCasesMin { get; set; }
         public decimal RiskLelvelCasesMax { get; set; }
         public bool IsCurrentRiskLevel { get; set; }
+        public bool IsPassedRiskLevel { get; set; }
+        public bool IsFutureRiskLevel { get; set; }
+
         public DateTime? EstimateRiskLevelDate { get; set; }
         public DateTime? EstimateRiskLevelDateQualification { get; set; }
         public string EstimateRiskLevelDateDisplay { get; set; }

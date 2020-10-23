@@ -81,7 +81,9 @@ namespace CovidStatus.Server.Helper
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
-            var defaultDateDisplay = selectedCounty.CriticalDaysMovingRateChange >= 0 ? "Cases are rising" : "N/A";
+            bool areCasesRising = selectedCounty.CriticalDaysMovingRateChange >= 0;
+
+            var defaultDateDisplay = areCasesRising ? "Cases are rising" : "N/A";
             var riskLevelList = new List<CountyRiskLevel>();
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay });
@@ -98,6 +100,8 @@ namespace CovidStatus.Server.Helper
             //California guideline date requirement
             foreach (var countyRiskLevel in riskLevelList.OrderByDescending(x => x.RiskLevelOrder))
             {
+                if (areCasesRising && countyRiskLevel.IsFutureRiskLevel) continue;
+
                 var previousRiskLevel = riskLevelList.FirstOrDefault(x => x.RiskLevelOrder == (countyRiskLevel.RiskLevelOrder + 1));
                 if (previousRiskLevel == null) continue;
 
@@ -116,6 +120,7 @@ namespace CovidStatus.Server.Helper
                 if (estimateRiskLevelDate == null) continue;
 
                 var estimatedRiskLevelDateQualification = estimateRiskLevelDate.Value.AddDays(daysToAdd); //California requires to meet risk level criteria for 2 weeks, county must stay in that level for at least 3 weeks before moving to new level
+
                 countyRiskLevel.EstimateRiskLevelDateQualification = estimatedRiskLevelDateQualification;
                 countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = $"{estimatedRiskLevelDateQualification:MMMM d, yyyy}";
             }
@@ -130,7 +135,16 @@ namespace CovidStatus.Server.Helper
             {
                 countyRiskLevel.IsCurrentRiskLevel = true;
             }
-            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
+            if (criticalDaysMovingCasesPerOneHundredThousandAverage < countyRiskLevel.RiskLelvelCasesMin)
+            {
+                countyRiskLevel.IsPassedRiskLevel = true;
+            }
+            if (criticalDaysMovingCasesPerOneHundredThousandAverage > countyRiskLevel.RiskLelvelCasesMax)
+            {
+                countyRiskLevel.IsFutureRiskLevel = true;
+            }
+
+            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(countyRiskLevel, criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
             string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : criticalDaysMovingRateChange >= 0 ? "Cases are rising" : "N/A";
             countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
@@ -138,14 +152,53 @@ namespace CovidStatus.Server.Helper
             countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
         }
 
-        private DateTime? EstimateCountyRiskLevelDate(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, decimal? criticalDaysMovingRateChange, decimal riskLelvelCasesMax)
+        private DateTime? EstimateCountyRiskLevelDate(CountyRiskLevel countyRiskLevel, decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, 
+            decimal? criticalDaysMovingRateChange)
         {
-            //Cases are increasing, return
-            if (criticalDaysMovingRateChange >= 0)
+            bool areCasesRising = criticalDaysMovingRateChange >= 0;
+
+            DateTime countyRiskLevelDate = DateTime.Today;
+
+            if (areCasesRising)
             {
-                return null;
+                if (countyRiskLevel.IsPassedRiskLevel || countyRiskLevel.IsCurrentRiskLevel)
+                {
+                    countyRiskLevelDate = EstimateCountyRiskLevelDateRisingCases(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMin);
+                }
+                //If cases are rising and this is a less restrictive level, return null
+                if(countyRiskLevel.IsFutureRiskLevel)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                countyRiskLevelDate = EstimateCountyRiskLevelDateRisingCases(criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange, countyRiskLevel.RiskLelvelCasesMax);
             }
 
+            return countyRiskLevelDate;
+        }
+
+        private DateTime EstimateCountyRiskLevelDateRisingCases(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage,
+            decimal? criticalDaysMovingRateChange, decimal riskLevelCasesMin)
+        {
+            DateTime countyRiskLevelDate = DateTime.Today;
+            decimal? casesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
+            int daysToAdd = 0;
+
+            while (casesPerOneHundredThousandAverage < riskLevelCasesMin)
+            {
+                var casesChange = (decimal)(casesPerOneHundredThousandAverage * (decimal)criticalDaysMovingRateChange);
+                casesPerOneHundredThousandAverage += casesChange;
+                daysToAdd++;
+            }
+
+            return countyRiskLevelDate.AddDays(daysToAdd);
+        }
+
+        private DateTime? EstimateCountyRiskLevelDateDecliningCases(decimal? criticalDaysMovingCasesPerOneHundredThousandAverage,
+            decimal? criticalDaysMovingRateChange, decimal riskLelvelCasesMax)
+        {
             DateTime countyRiskLevelDate = DateTime.Today;
             decimal? casesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
             int daysToAdd = 0;
