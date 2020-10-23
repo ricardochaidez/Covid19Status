@@ -83,7 +83,7 @@ namespace CovidStatus.Server.Helper
         {
             selectedCounty.AreCasesRising = selectedCounty.CriticalDaysMovingRateChange >= 0;
 
-            var defaultDateDisplay = selectedCounty.AreCasesRising ? "Cases are rising" : "N/A";
+            var defaultDateDisplay = selectedCounty.AreCasesRising ? "-" : "N/A";
             var riskLevelList = new List<CountyRiskLevel>();
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLevelName = "Minimal", RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "minimalBackgroundColor", CSSClassLightBackgroundColor = "minimalBackgroundLightColor" });
             riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLevelName = "Moderate", RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "moderateBackgroundColor", CSSClassLightBackgroundColor = "moderateBackgroundLightColor" });
@@ -146,7 +146,7 @@ namespace CovidStatus.Server.Helper
 
             DateTime? riskLevelDate = EstimateCountyRiskLevelDate(countyRiskLevel, criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
-            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : criticalDaysMovingRateChange >= 0 ? "Cases are rising" : "N/A";
+            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : criticalDaysMovingRateChange >= 0 ? "-" : "N/A";
             countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
             countyRiskLevel.EstimateRiskLevelDateQualification = riskLevelDate;
             countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
