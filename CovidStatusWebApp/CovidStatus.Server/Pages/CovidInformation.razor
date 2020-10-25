@@ -142,7 +142,7 @@ else
                 {
                     <div class="row @riskLevel.CSSClassLightBackgroundColor centeredText riskLevelRow">
                         <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                            <p class="roundedLabel @riskLevel.CSSClassBackgroundColor">Widespread</p>
+                            <p class="roundedLabel @riskLevel.CSSClassBackgroundColor">@riskLevel.RiskLevelName</p>
                         </div>
                         <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
                             @if (riskLevel.RiskLevel == RiskLevel.Widespread)
@@ -238,6 +238,9 @@ else
         </div>
         <div style="padding-top: 10px; padding-bottom: 20px;">
             Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
+        </div>
+        <div style="padding-bottom: 20px;">
+            For more details go to the <span><a href="about">About</a></span> page
         </div>
     </div>
 }
