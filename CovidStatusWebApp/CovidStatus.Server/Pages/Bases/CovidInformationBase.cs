@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazor.Analytics;
 using CovidStatus.Server.ConfigurationSettings;
 using CovidStatus.Server.Helper;
 using CovidStatus.Server.Services.Interfaces;
@@ -15,6 +16,7 @@ namespace CovidStatus.Server.Pages.Bases
     public class CovidInformationBase : ComponentBase
     {
         [Inject] private ICovidDataService CovidDataService { get; set; }
+        [Inject] private IAnalytics Analytics { get; set; }
         public List<CovidData> CovidDataList { get; set; }
         public List<County> CountyList { get; set; }
         public County SelectedCounty { get; set; }
@@ -40,12 +42,23 @@ namespace CovidStatus.Server.Pages.Bases
             CriticalDaysCount = DefaultCriticalDaysCount;
 
             await GetCriticalDaysMessage(CriticalDaysCount);
-            await GetData(countyName, DefaultCriticalDaysCount);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await GetData(SelectedCounty.CountyName, DefaultCriticalDaysCount);
+            }
         }
 
         private async Task GetData(string countyName, int criticalDaysCount)
         {
+            DateTime startTime = DateTime.Now;
             await GetCovidData(countyName, criticalDaysCount);
+            DateTime endTime = DateTime.Now;
+            TimeSpan span = startTime - endTime;
+            await Analytics.TrackEvent($"Get Data for {countyName} for {criticalDaysCount} days moving average", $"{span.TotalMilliseconds} milliseconds");
         }
 
         private async Task GetCovidData(string countyName, int criticalDaysCount)

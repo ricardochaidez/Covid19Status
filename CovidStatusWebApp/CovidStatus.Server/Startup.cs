@@ -1,4 +1,5 @@
 using System;
+using Blazor.Analytics;
 using CovidStatus.API.Repositories;
 using CovidStatus.API.Repositories.Interface;
 using CovidStatus.Server.ConfigurationSettings;
@@ -84,6 +85,9 @@ namespace CovidStatus.Server
 
         private void ThirdPartySoftwareRegistration(IServiceCollection services)
         {
+            //Google Analytics
+            services.AddGoogleAnalytics("");
+
             //Syncfusion
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(AppConfigurationSettings.SyncfusionLicense);
             services.AddSyncfusionBlazor();
