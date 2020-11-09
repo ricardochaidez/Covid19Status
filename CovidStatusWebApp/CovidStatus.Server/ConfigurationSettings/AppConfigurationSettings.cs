@@ -20,5 +20,8 @@
 
         public static int CaliforniaWaitTimeRequirement;
         public static int CriticalDaysCount;
+
+        public static string CaliforniaCovidOpenDataAddress;
+        public static string CaliforniaCovidHospitalOpenDataAddress;
     }
 }

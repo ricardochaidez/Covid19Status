@@ -10,9 +10,13 @@
 
 @inherits CovidStatus.Server.Pages.Bases.CovidInformationBase
 
-@if (SelectedCounty == null || CovidDataList == null)
+@if ((SelectedCounty == null || CovidDataList == null) && !IsError)
 {
     <h4>Loading...</h4>
+}
+else if (IsError)
+{
+    <p style="color:red">@((MarkupString)ErrorMessage)</p>
 }
 else
 {
@@ -160,7 +164,7 @@ else
                             {
                                 <p style="color: red"><i class="fas fa-arrow-circle-up"></i></p>
                             }
-                            else if(!SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
+                            else if (!SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
                             {
                                 <p style="color: green"><i class="fas fa-arrow-circle-down"></i></p>
                             }
@@ -243,4 +247,5 @@ else
             For more details go to the <span><a href="about">About</a></span> page
         </div>
     </div>
+    
 }

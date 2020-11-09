@@ -26,6 +26,8 @@ namespace CovidStatus.Server.Pages.Bases
         public int DefaultCriticalDaysCount { get; set; }
         public byte DefaultCounty { get; set; }
         public string CriticalDaysMessage { get; set; }
+        public bool IsError { get; set; }
+        public string ErrorMessage { get; set; }
 
         public DateTime LastUpdateDate { get; set; }
         public SfGrid<CovidData> CovidDataGrid;
@@ -54,11 +56,25 @@ namespace CovidStatus.Server.Pages.Bases
 
         private async Task GetData(string countyName, int criticalDaysCount)
         {
-            DateTime startTime = DateTime.Now;
-            await GetCovidData(countyName, criticalDaysCount);
-            DateTime endTime = DateTime.Now;
-            TimeSpan span = startTime - endTime;
-            await Analytics.TrackEvent($"Get Data for {countyName} for {criticalDaysCount} days moving average", $"{span.TotalMilliseconds} milliseconds");
+            try
+            {
+                DateTime startTime = DateTime.Now;
+
+                await GetCovidData(countyName, criticalDaysCount);
+                
+                IsError = false;
+                ErrorMessage = string.Empty;
+
+                DateTime endTime = DateTime.Now;
+                TimeSpan span = startTime - endTime;
+                await Analytics.TrackEvent($"Get Data for {countyName} for {criticalDaysCount} days moving average", $"{span.TotalMilliseconds} milliseconds");
+            }
+            catch (Exception e)
+            {
+                IsError = true;
+                ErrorMessage = $"<h4>CA Open Data API Is Unavailable</h4><br /><a target=\"_blank\" href=\"https://data.ca.gov/group/covid-19\">California Open Data</a> <br /><a target=\"_blank\" href=\"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}\">COVID-19 Cases</a><br /><a target=\"_blank\" href=\"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress}\">COVID-19 Hospital Data</a>";
+            }
+            StateHasChanged();
         }
 
         private async Task GetCovidData(string countyName, int criticalDaysCount)
