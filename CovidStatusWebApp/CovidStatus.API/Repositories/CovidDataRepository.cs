@@ -15,7 +15,7 @@ namespace CovidStatus.API.Repositories
 
         public List<CovidData> GetCovidDataByCounty(string countyName)
         {
-            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit=100&q={countyName}&sort=date%20desc";
+            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
 
             string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
 

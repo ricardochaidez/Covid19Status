@@ -38,9 +38,11 @@ namespace CovidStatus.Server.ConfigurationSettings
         {
             API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidOpenDataAddress = config.GetSection("CaliforniaCovidOpenDataAddress").Value;
             API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress = config.GetSection("CaliforniaCovidHospitalOpenDataAddress").Value;
+            API.ConfigurationSettings.AppConfigurationSettings.CaliforniaCovidOpenDataLimit = int.Parse(config.GetSection("CaliforniaCovidOpenDataLimit").Value);
 
             AppConfigurationSettings.CaliforniaCovidOpenDataAddress = config.GetSection("CaliforniaCovidOpenDataAddress").Value;
             AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress = config.GetSection("CaliforniaCovidHospitalOpenDataAddress").Value;
+            AppConfigurationSettings.CaliforniaCovidOpenDataLimit = int.Parse(config.GetSection("CaliforniaCovidOpenDataLimit").Value);
         }
         private void LoadCovidStatusAPI(IConfiguration config)
         {
