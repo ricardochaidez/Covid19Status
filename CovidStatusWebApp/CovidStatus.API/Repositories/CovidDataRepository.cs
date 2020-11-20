@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using CovidStatus.API.ConfigurationSettings;
@@ -41,18 +42,44 @@ namespace CovidStatus.API.Repositories
 
         public string GetCARawCovidJsonDataByCounty(string countyName)
         {
-            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
+            try
+            {
+                string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
 
-            string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
-            return covidDataJson;
+                string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
+                if (string.IsNullOrEmpty(covidDataJson))
+                {
+                    throw new Exception("Data is empty");
+                }
+                return covidDataJson;
+            }
+            catch (Exception e)
+            {
+                string fallbackRequestUrl = $"{AppConfigurationSettings.CaliforniaCovidOpenDataFallbackAddress}{countyName}_COVID_Data.json";
+                string covidDataJson = client.GetStringAsync(fallbackRequestUrl).Result;
+                return covidDataJson;
+            }
         }
 
         public string GetCARawCovidHospitalJsonDataByCounty(string countyName)
         {
-            string californiaOpenDataCovidHospitalRequest = $"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress}&limit=100&q={countyName}&sort=todays_date%20desc";
+            try
+            {
+                string californiaOpenDataCovidHospitalRequest = $"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress}&limit=100&q={countyName}&sort=todays_date%20desc";
 
-            string covidHospitalDataJson = client.GetStringAsync(californiaOpenDataCovidHospitalRequest).Result;
-            return covidHospitalDataJson;
+                string covidHospitalDataJson = client.GetStringAsync(californiaOpenDataCovidHospitalRequest).Result;
+                if (string.IsNullOrEmpty(covidHospitalDataJson))
+                {
+                    throw new Exception("Data is empty");
+                }
+                return covidHospitalDataJson;
+            }
+            catch (Exception e)
+            {
+                string fallbackRequestUrl = $"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataFallbackAddress}{countyName}_Hospital_Data.json";
+                string covidHospitalDataJson = client.GetStringAsync(fallbackRequestUrl).Result;
+                return covidHospitalDataJson;
+            }
         }
 
         private void AddCovidHospitalDataByCounty(List<CovidData> covidData, string countyName)
