@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Blazor.Analytics;
 using CovidStatus.Server.ConfigurationSettings;
 using CovidStatus.Server.Helper;
 using CovidStatus.Server.Services.Interfaces;
 using CovidStatus.Shared.Entities;
+using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Navigations;
 
 namespace CovidStatus.Server.Pages.Bases
 {
     public class CovidInformationBase : ComponentBase
     {
+        [Inject] IJSRuntime JSRuntime { get; set; }
         [Inject] private ICovidDataService CovidDataService { get; set; }
         [Inject] private IAnalytics Analytics { get; set; }
         public List<CovidData> CovidDataList { get; set; }
@@ -40,7 +44,7 @@ namespace CovidStatus.Server.Pages.Bases
             DefaultCounty = SelectedCounty?.CountyID ?? 0;
 
             CriticalDayList = await GetCriticalDayList();
-            DefaultCriticalDaysCount = AppConfigurationSettings.CriticalDaysCount;
+            DefaultCriticalDaysCount = AppConfigurationSettings.CriticalDaysCount == 0 ? 7 : AppConfigurationSettings.CriticalDaysCount;
             CriticalDaysCount = DefaultCriticalDaysCount;
 
             await GetCriticalDaysMessage(CriticalDaysCount);
@@ -137,6 +141,77 @@ namespace CovidStatus.Server.Pages.Bases
             var exportProperties = new ExcelExportProperties();
             exportProperties.IncludeHiddenColumn = true;
             await CovidDataGrid.ExcelExport(exportProperties);
+        }
+
+        public async Task GetCasesRawDataPerCounty()
+        {
+            string rawData = await CovidDataService.GetCARawCovidJsonDataByCounty(SelectedCounty?.CountyName);
+            await DownloadJsonFile(rawData, $"{SelectedCounty?.CountyName}_CAOpenData_COVID_{DateTime.Now:yyyy-MM-dd}.json");
+        }
+
+        public async Task GetHospitalRawDataPerCounty()
+        {
+            string rawData = await CovidDataService.GetCARawCovidHospitalJsonDataByCounty(SelectedCounty?.CountyName);
+            await DownloadJsonFile(rawData, $"{SelectedCounty?.CountyName}_CAOpenData_Hospital_{DateTime.Now:yyyy-MM-dd}.json");
+        }
+
+        public async Task GetAllCovidRawData()
+        {
+            var allCountiesRawData = new Dictionary<string, string>();
+
+            foreach (var county in CountyList.Where(county => !allCountiesRawData.ContainsKey(county.CountyName)))
+            {
+                string countyRawData = await CovidDataService.GetCARawCovidJsonDataByCounty(county.CountyName);
+                allCountiesRawData.Add(county.CountyName, countyRawData);
+            }
+
+            await DownloadZip(allCountiesRawData, "COVID_Data", "CAOpenData_COVID_All_Counties");
+        }
+
+        public async Task GetAllHospitalRawData()
+        {
+            var allCountiesRawData = new Dictionary<string, string>();
+
+            foreach (var county in CountyList.Where(county => !allCountiesRawData.ContainsKey(county.CountyName)))
+            {
+                string countyRawData = await CovidDataService.GetCARawCovidHospitalJsonDataByCounty(county.CountyName);
+                allCountiesRawData.Add(county.CountyName, countyRawData);
+            }
+
+            await DownloadZip(allCountiesRawData, "Hospital_Data", "CAOpenData_Hospital_All_Counties");
+        }
+
+        private async Task DownloadZip(Dictionary<string, string> countyData, string zippedFilesName, string zipFileName)
+        {
+            var zipStream = new MemoryStream();
+            var zip = new ZipOutputStream(zipStream);
+
+            foreach (var countyRawData in countyData)
+            {
+                var fileContent = Encoding.UTF8.GetBytes(countyRawData.Value);
+
+                AddFileToZip($"{countyRawData.Key}_{zippedFilesName}.json", fileContent, zip);
+            }
+
+            zip.Close();
+
+            FileHelper fileHelper = new FileHelper(JSRuntime);
+            await fileHelper.DownloadFileFromBytes($"{zipFileName}_{DateTime.Now:yyyy-MM-dd}.zip", zipStream.ToArray());
+        }
+
+        private static void AddFileToZip(string fileName, byte[] fileContent, ZipOutputStream zip)
+        {
+            var zipEntry = new ZipEntry(fileName) { DateTime = DateTime.Now, Size = fileContent.Length };
+            zip.PutNextEntry(zipEntry);
+            zip.Write(fileContent, 0, fileContent.Length);
+            zip.CloseEntry();
+        }
+
+        private async Task DownloadJsonFile(string jsonData, string fileName)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(jsonData);
+            FileHelper fileHelper = new FileHelper(JSRuntime);
+            await fileHelper.DownloadFileFromBytes(fileName, bytes);
         }
     }
 }

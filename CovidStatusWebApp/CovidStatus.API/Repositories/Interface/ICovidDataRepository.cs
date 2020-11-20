@@ -7,5 +7,7 @@ namespace CovidStatus.API.Repositories.Interface
     {
         List<County> GetCountyList();
         List<CovidData> GetCovidDataByCounty(string countyName);
+        string GetCARawCovidJsonDataByCounty(string countyName);
+        string GetCARawCovidHospitalJsonDataByCounty(string countyName);
     }
 }

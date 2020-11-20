@@ -89,7 +89,7 @@ namespace CovidStatus.Server
             services.AddGoogleAnalytics("");
 
             //Syncfusion
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(AppConfigurationSettings.SyncfusionLicense);
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(AppConfigurationSettings.SyncfusionLicense ?? "MzEwNDAxQDMxMzgyZTMyMmUzMFRnanExTXB4Zm5CVG11bTB6RS9YT1lHeVl3bGVHRGpxeFAxaEcxb09PS2s9");
             services.AddSyncfusionBlazor();
         }
     }

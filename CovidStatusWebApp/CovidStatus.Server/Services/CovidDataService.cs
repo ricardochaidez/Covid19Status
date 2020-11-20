@@ -24,5 +24,15 @@ namespace CovidStatus.Server.Services
             var covidData = _covidDataRepository.GetCovidDataByCounty(countyName);
             return covidData;
         }
+
+        public async Task<string> GetCARawCovidJsonDataByCounty(string countyName)
+        {
+            return _covidDataRepository.GetCARawCovidJsonDataByCounty(countyName);
+        }
+
+        public async Task<string> GetCARawCovidHospitalJsonDataByCounty(string countyName)
+        {
+            return _covidDataRepository.GetCARawCovidHospitalJsonDataByCounty(countyName);
+        }
     }
 }

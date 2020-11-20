@@ -15,9 +15,7 @@ namespace CovidStatus.API.Repositories
 
         public List<CovidData> GetCovidDataByCounty(string countyName)
         {
-            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
-
-            string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
+            string covidDataJson = GetCARawCovidJsonDataByCounty(countyName);
 
             CovidDataEntity.Root covidDataDeserialized = JsonConvert.DeserializeObject<CovidDataEntity.Root>(covidDataJson);
 
@@ -41,11 +39,25 @@ namespace CovidStatus.API.Repositories
             return covidDataList;
         }
 
-        private void AddCovidHospitalDataByCounty(List<CovidData> covidData, string countyName)
+        public string GetCARawCovidJsonDataByCounty(string countyName)
+        {
+            string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
+
+            string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
+            return covidDataJson;
+        }
+
+        public string GetCARawCovidHospitalJsonDataByCounty(string countyName)
         {
             string californiaOpenDataCovidHospitalRequest = $"{AppConfigurationSettings.CaliforniaCovidHospitalOpenDataAddress}&limit=100&q={countyName}&sort=todays_date%20desc";
 
             string covidHospitalDataJson = client.GetStringAsync(californiaOpenDataCovidHospitalRequest).Result;
+            return covidHospitalDataJson;
+        }
+
+        private void AddCovidHospitalDataByCounty(List<CovidData> covidData, string countyName)
+        {
+            string covidHospitalDataJson = GetCARawCovidHospitalJsonDataByCounty(countyName);
 
             CovidHospitalDataEntity.Root covidDataDeserialized = JsonConvert.DeserializeObject<CovidHospitalDataEntity.Root>(covidHospitalDataJson);
 

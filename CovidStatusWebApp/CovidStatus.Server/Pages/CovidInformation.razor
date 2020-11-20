@@ -20,232 +20,244 @@ else if (IsError)
 }
 else
 {
-    <div class="container">
-        <div class="row justify-content-end">
-            <div class="col rightAlignText">
-                Last Update Date: @String.Format("{0:MMMM d, yyyy}", LastUpdateDate)
-            </div>
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col rightAlignText">
+            Last Update Date: @String.Format("{0:MMMM d, yyyy}", LastUpdateDate)
         </div>
-        <div class="row justify-content-between">
-            <div class="col-12 col-sm-12 col-md-6 col-lg-5">
-                <SfDropDownList TValue="byte"
-                                TItem="County"
-                                Placeholder="Select County:"
-                                FloatLabelType="@FloatLabelType.Auto"
-                                AllowFiltering="true"
-                                DataSource="@CountyList"
-                                CssClass="e-bold-label"
-                                Value="@DefaultCounty">
-                    <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
-                    <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
-                </SfDropDownList>
-            </div>
-            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                <SfDropDownList TValue="int"
-                                TItem="CriticalDay"
-                                Placeholder="Days Moving Average:"
-                                FloatLabelType="@FloatLabelType.Auto"
-                                AllowFiltering="true"
-                                DataSource="@CriticalDayList"
-                                CssClass="e-bold-label"
-                                Value="@DefaultCriticalDaysCount">
-                    <DropDownListFieldSettings Text="CriticalDayCount" Value="CriticalDayCount"></DropDownListFieldSettings>
-                    <DropDownListEvents TValue="int" ValueChange="OnCriticalDaysChanged"></DropDownListEvents>
-                </SfDropDownList>
-            </div>
+    </div>
+    <div class="row justify-content-between">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-5">
+            <SfDropDownList TValue="byte"
+                            TItem="County"
+                            Placeholder="Select County:"
+                            FloatLabelType="@FloatLabelType.Auto"
+                            AllowFiltering="true"
+                            DataSource="@CountyList"
+                            CssClass="e-bold-label"
+                            Value="@DefaultCounty">
+                <DropDownListFieldSettings Text="CountyName" Value="CountyID"></DropDownListFieldSettings>
+                <DropDownListEvents TValue="byte" ValueChange="OnCountyChanged"></DropDownListEvents>
+            </SfDropDownList>
         </div>
-        <br />
-        <div class="row align-items-center">
-            <div class="col-12 col-sm-12 col-md-6 col-lg-6 column-padding">
-                <div class="row align-items-center">
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                        <div class="row">
-                            <div class="col-6 col-sm-6 col-md-12 col-lg-12 d-flex justify-content-center centeredText">
-                                <h5>@SelectedCounty.CountyName</h5>
-                            </div>
-                            <div class="col-6 col-sm-6 col-md-12 col-lg-12 d-flex justify-content-center centeredText">
-                                <p class="roundedLabel @SelectedCounty.CurrentRiskLevel.CSSClassBackgroundColor">@SelectedCounty.CurrentRiskLevel.RiskLevelName</p>
-                            </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+            <SfDropDownList TValue="int"
+                            TItem="CriticalDay"
+                            Placeholder="Days Moving Average:"
+                            FloatLabelType="@FloatLabelType.Auto"
+                            AllowFiltering="true"
+                            DataSource="@CriticalDayList"
+                            CssClass="e-bold-label"
+                            Value="@DefaultCriticalDaysCount">
+                <DropDownListFieldSettings Text="CriticalDayCount" Value="CriticalDayCount"></DropDownListFieldSettings>
+                <DropDownListEvents TValue="int" ValueChange="OnCriticalDaysChanged"></DropDownListEvents>
+            </SfDropDownList>
+        </div>
+    </div>
+    <br />
+    <div class="row align-items-center">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 column-padding">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-12 col-lg-12 d-flex justify-content-center centeredText">
+                            <h5>@SelectedCounty.CountyName</h5>
                         </div>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                        <div class="row">
-                            <div class="col d-flex justify-content-center centeredText">
-                                <i class="fas fa-users"></i>&nbsp;<p class="boldFont">Population</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col d-flex justify-content-center centeredText">
-                                <p class="boldFont">@SelectedCounty.Population.ToString("N0")</p>
-                            </div>
+                        <div class="col-6 col-sm-6 col-md-12 col-lg-12 d-flex justify-content-center centeredText">
+                            <p class="roundedLabel @SelectedCounty.CurrentRiskLevel.CSSClassBackgroundColor">@SelectedCounty.CurrentRiskLevel.RiskLevelName</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                <div class="row">
-                    <div class="col d-flex justify-content-center centeredText">
-                        <h5>@CriticalDaysMessage</h5>
-                    </div>
-                </div>
-                <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                <p class="boldFont">Cases per 100k population:</p>
-                            </div>
-                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                <p class="boldFont">Rate Change:</p>
-                            </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center centeredText">
+                            <i class="fas fa-users"></i>&nbsp;<p class="boldFont">Population</p>
                         </div>
-                        <div class="row">
-                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
-                            </div>
-                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                                @if (SelectedCounty.CriticalDaysMovingRateChange > 0)
-                                {
-                                    <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
-                                }
-                                else if (SelectedCounty.CriticalDaysMovingRateChange < 0)
-                                {
-                                    <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingRateChange.Value.ToString("P2")</p>
-                                }
-                                else
-                                {
-                                    <p class="boldFont">@SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
-                                }
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-center centeredText">
+                            <p class="boldFont">@SelectedCounty.Population.ToString("N0")</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <br />
-        <div class="row">
-            <div class="col">
-                <p>For official county risk level visit the California COVID page: <a target="_blank" href="https://covid19.ca.gov/safer-economy/">COVID19.CA.GOV</a></p>
-            </div>
-        </div>
-        <br />
-        @if (SelectedCounty.RiskLevels != null)
-        {
-            <div>
-                <div class="row">
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
-                        <h5>Risk Level</h5>
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
-                        <h5>New Cases per 100k</h5>
-                    </div>
-                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
-                        <h5>Estimated Qualified Date</h5>
-                    </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col d-flex justify-content-center centeredText">
+                    <h5>@CriticalDaysMessage</h5>
                 </div>
-                @foreach (var riskLevel in SelectedCounty.RiskLevels.OrderByDescending(x => x.RiskLevelOrder))
-                {
-                    <div class="row @riskLevel.CSSClassLightBackgroundColor centeredText riskLevelRow">
-                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                            <p class="roundedLabel @riskLevel.CSSClassBackgroundColor">@riskLevel.RiskLevelName</p>
+            </div>
+            <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                            <p class="boldFont">Cases per 100k population:</p>
                         </div>
-                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                            @if (riskLevel.RiskLevel == RiskLevel.Widespread)
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                            <p class="boldFont">Rate Change:</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                            <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                            @if (SelectedCounty.CriticalDaysMovingRateChange > 0)
                             {
-                                <p>More than @riskLevel.RiskLelvelCasesMin</p>
+                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
+                            }
+                            else if (SelectedCounty.CriticalDaysMovingRateChange < 0)
+                            {
+                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingRateChange.Value.ToString("P2")</p>
                             }
                             else
                             {
-                                <p>@riskLevel.RiskLelvelCasesMin - @riskLevel.RiskLelvelCasesMax</p>
-                            }
-                        </div>
-                        <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
-                            @riskLevel.EstimateRiskLevelDateQualificationDisplay &nbsp;
-                            @if (SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
-                            {
-                                <p style="color: red"><i class="fas fa-arrow-circle-up"></i></p>
-                            }
-                            else if (!SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
-                            {
-                                <p style="color: green"><i class="fas fa-arrow-circle-down"></i></p>
+                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
                             }
                         </div>
                     </div>
-                }
+                </div>
             </div>
-        }
-        <br />
-        <div class="row" style="padding-bottom: 20px">
-            <div class="col">
-                <SfTab CssClass="default-tab" HeaderPlacement="HeaderPosition.Top">
-                    <TabItems>
-                        <TabItem>
-                            <ChildContent>
-                                <TabHeader Text="Cases" IconCss="fas fa-head-side-cough"></TabHeader>
-                            </ChildContent>
-                            <ContentTemplate>
-                                <LineChart ChartTitle="COVID-19 Cases" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.CasesMovingAverage" ChartSeriesName="@CriticalDaysMessage" LineColor="#802F67" />
-                            </ContentTemplate>
-                        </TabItem>
-                        <TabItem>
-                            <ChildContent>
-                                <TabHeader Text="Deaths" IconCss="fas fa-skull-crossbones"></TabHeader>
-                            </ChildContent>
-                            <ContentTemplate>
-                                <LineChart ChartTitle="COVID-19 Deaths" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.DeathsMovingAverage" ChartSeriesName="@CriticalDaysMessage" LineColor="#C43D53" />
-                            </ContentTemplate>
-                        </TabItem>
-
-                        <TabItem>
-                            <ChildContent>
-                                <TabHeader Text="ICU Patients" IconCss="fas fa-procedures"></TabHeader>
-                            </ChildContent>
-                            <ContentTemplate>
-                                <LineChart ChartTitle="COVID-19 ICU Patients" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.ICUCovidPatients" ChartSeriesName="COVID-19 ICU Patients" LineColor="#E6B735" />
-                            </ContentTemplate>
-                        </TabItem>
-                    </TabItems>
-                </SfTab>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 col-sm-6 col-md-2 col-lg-2">
-                <h5>COVID Data</h5>
-            </div>
-            <div class="col-6 col-sm-6 col-md-10 col-lg-10 d-flex justify-content-end">
-                <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
-            </div>
-        </div>
-        <br />
-        <div class="row" style="padding-bottom: 20px">
-            <div class="col">
-                <SfGrid @ref="CovidDataGrid" DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true" AllowExcelExport="true" AllowResizing="true">
-                    <GridPageSettings PageSize="@CriticalDaysCount"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
-                        <GridColumn Field=@nameof(CovidData.County) Visible="false" HeaderText="County Name" Width="120"></GridColumn>
-                        <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="100"></GridColumn>
-                        <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Cases" Width="100"></GridColumn>
-                        <GridColumn Field=@nameof(CovidData.NewCountDeaths) HeaderText="New Deaths" Width="100"></GridColumn>
-                        <GridColumn Field=@nameof(CovidData.ICUCovidPatientCount) HeaderText="ICU COVID Patients" Width="100"></GridColumn>
-                        <GridColumn HeaderText="@CriticalDaysMessage" HeaderTextAlign="TextAlign.Center">
-                            <GridColumns>
-                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageCases) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageDeaths) Format="N2" HeaderText="Deaths" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingDeathsPerOneHundredThousand) Format="N2" HeaderText="Deaths Per 100k Population" Width="100"></GridColumn>
-                                <GridColumn Field=@nameof(CovidData.CriticalDaysMovingRateChange) Format="P2" HeaderText="Cases Rate Change" Width="100"></GridColumn>
-                            </GridColumns>
-                        </GridColumn>
-                    </GridColumns>
-                </SfGrid>
-            </div>
-        </div>
-        <div style="padding-top: 10px; padding-bottom: 20px;">
-            Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
-        </div>
-        <div style="padding-bottom: 20px;">
-            For more details go to the <span><a href="about">About</a></span> page
         </div>
     </div>
+    <br />
+    <div class="row">
+        <div class="col">
+            <p>For official county risk level visit the California COVID page: <a target="_blank" href="https://covid19.ca.gov/safer-economy/">COVID19.CA.GOV</a></p>
+        </div>
+    </div>
+    <br />
+    @if (SelectedCounty.RiskLevels != null)
+    {
+        <div>
+            <div class="row">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
+                    <h5>Risk Level</h5>
+                </div>
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
+                    <h5>New Cases per 100k</h5>
+                </div>
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center centeredText">
+                    <h5>Estimated Qualified Date</h5>
+                </div>
+            </div>
+            @foreach (var riskLevel in SelectedCounty.RiskLevels.OrderByDescending(x => x.RiskLevelOrder))
+            {
+                <div class="row @riskLevel.CSSClassLightBackgroundColor centeredText riskLevelRow">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                        <p class="roundedLabel @riskLevel.CSSClassBackgroundColor">@riskLevel.RiskLevelName</p>
+                    </div>
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                        @if (riskLevel.RiskLevel == RiskLevel.Widespread)
+                        {
+                            <p>More than @riskLevel.RiskLelvelCasesMin</p>
+                        }
+                        else
+                        {
+                            <p>@riskLevel.RiskLelvelCasesMin - @riskLevel.RiskLelvelCasesMax</p>
+                        }
+                    </div>
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 d-flex justify-content-center">
+                        @riskLevel.EstimateRiskLevelDateQualificationDisplay &nbsp;
+                        @if (SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
+                        {
+                            <p style="color: red"><i class="fas fa-arrow-circle-up"></i></p>
+                        }
+                        else if (!SelectedCounty.AreCasesRising && riskLevel.IsCurrentRiskLevel)
+                        {
+                            <p style="color: green"><i class="fas fa-arrow-circle-down"></i></p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    <br />
+    <div class="row" style="padding-bottom: 20px">
+        <div class="col">
+            <SfTab CssClass="default-tab" HeaderPlacement="HeaderPosition.Top">
+                <TabItems>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="Cases" IconCss="fas fa-head-side-cough"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                            <LineChart ChartTitle="COVID-19 Cases" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.CasesMovingAverage" ChartSeriesName="@CriticalDaysMessage" LineColor="#802F67" />
+                        </ContentTemplate>
+                    </TabItem>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="Deaths" IconCss="fas fa-skull-crossbones"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                            <LineChart ChartTitle="COVID-19 Deaths" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.DeathsMovingAverage" ChartSeriesName="@CriticalDaysMessage" LineColor="#C43D53" />
+                        </ContentTemplate>
+                    </TabItem>
+
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="ICU Patients" IconCss="fas fa-procedures"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                            <LineChart ChartTitle="COVID-19 ICU Patients" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.ICUCovidPatients" ChartSeriesName="COVID-19 ICU Patients" LineColor="#E6B735" />
+                        </ContentTemplate>
+                    </TabItem>
+                </TabItems>
+            </SfTab>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-sm-6 col-md-2 col-lg-2">
+            <h5>COVID Data</h5>
+        </div>
+        <div class="col-6 col-sm-6 col-md-10 col-lg-10 d-flex justify-content-end">
+            <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
+        </div>
+    </div>
+    <br />
+    <div class="row" style="padding-bottom: 20px">
+        <div class="col">
+            <SfGrid @ref="CovidDataGrid" DataSource="@CovidDataList" AllowPaging="true" AllowTextWrap="true" AllowExcelExport="true" AllowResizing="true">
+                <GridPageSettings PageSize="@CriticalDaysCount"></GridPageSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.County) Visible="false" HeaderText="County Name" Width="120"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Cases" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.NewCountDeaths) HeaderText="New Deaths" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.ICUCovidPatientCount) HeaderText="ICU COVID Patients" Width="100"></GridColumn>
+                    <GridColumn HeaderText="@CriticalDaysMessage" HeaderTextAlign="TextAlign.Center">
+                        <GridColumns>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageCases) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageDeaths) Format="N2" HeaderText="Deaths" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingDeathsPerOneHundredThousand) Format="N2" HeaderText="Deaths Per 100k Population" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingRateChange) Format="P2" HeaderText="Cases Rate Change" Width="100"></GridColumn>
+                        </GridColumns>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+    <div style="padding-top: 10px;">
+        <a href="" @onclick="GetCasesRawDataPerCounty">Download @SelectedCounty.CountyName Cases Raw Data</a>
+    </div>
+    <div>
+        <a href="" @onclick="GetHospitalRawDataPerCounty">Download @SelectedCounty.CountyName Hospital Raw Data</a>
+    </div>
+    <div style="padding-top: 20px;">
+        <a href="" @onclick="GetAllHospitalRawData">Download Hospital Raw Data [All Counties]</a>
+    </div>
+    <div>
+        <a href="" @onclick="GetAllCovidRawData">Download COVID Raw Data [All Counties]</a>
+    </div>
+    <div style="padding-top: 10px; padding-bottom: 20px;">
+        Disclaimer: This website is not affiliated to the California government or any health organization. The information shown here is not approved by the State or Health Officials in the state of California.
+    </div>
+    <div style="padding-bottom: 20px;">
+        For more details go to the <span><a href="about">About</a></span> page
+    </div>
+</div>
     
 }

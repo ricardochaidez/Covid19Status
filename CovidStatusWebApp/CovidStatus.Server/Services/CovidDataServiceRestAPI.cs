@@ -32,5 +32,23 @@ namespace CovidStatus.Server.Services
 
             return covidDataList;
         }
+
+        public async Task<string> GetCARawCovidJsonDataByCounty(string countyName)
+        {
+            var covidDataList = await JsonSerializer.DeserializeAsync<string>(
+                await _httpClient.GetStreamAsync($"api/coviddata/californiarawdata/{countyName}"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            return covidDataList;
+        }
+
+        public async Task<string> GetCARawCovidHospitalJsonDataByCounty(string countyName)
+        {
+            var covidDataList = await JsonSerializer.DeserializeAsync<string>(
+                await _httpClient.GetStreamAsync($"api/coviddata/californiarawhospitaldata/{countyName}"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            return covidDataList;
+        }
     }
 }
