@@ -9,10 +9,13 @@ namespace CovidStatus.Shared.Entities
         public string CountyName { get; set; }
         public int Population { get; set; }
         public decimal? CriticalDaysMovingCasesAverage { get; set; }
+        public decimal? CriticalDaysMovingAvailableICUBedsAverage { get; set; }
         public decimal? CriticalDaysMovingCasesPerOneHundredThousandAverage { get; set; }
-        public decimal? CriticalDaysMovingRateChange { get; set; }
+        public decimal? CriticalDaysMovingCasesRateChange { get; set; }
+        public decimal? CriticalDaysMovingAvailableICUBedsRateChange { get; set; }
         public List<CountyRiskLevel> RiskLevels { get; set; }
         public CountyRiskLevel CurrentRiskLevel { get; set; }
         public bool AreCasesRising { get; set; }
+        public bool AreAvailableICUBedsDeclining { get; set; }
     }
 }

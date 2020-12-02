@@ -93,15 +93,15 @@ namespace CovidStatus.API.Repositories
                 CovidData covidRecord = covidData.FirstOrDefault(x => x.Date == hospitalRecord.todays_date && x.County == hospitalRecord.county);
                 if (covidRecord == null) continue;
 
-                double? icuCovidPatient = null;
-                if (double.TryParse(hospitalRecord.icu_covid_confirmed_patients.ToString(), out double icuCovidPatientCount))
+                decimal? icuCovidPatient = null;
+                if (decimal.TryParse(hospitalRecord.icu_covid_confirmed_patients.ToString(), out decimal icuCovidPatientCount))
                 {
                     icuCovidPatient = icuCovidPatientCount;
                 }
                 covidRecord.ICUCovidPatientCount = icuCovidPatient ?? 0;
 
-                double? icuAvailableBeds = null;
-                if (double.TryParse(hospitalRecord.icu_available_beds.ToString(), out double icuAvailableBedsCount))
+                decimal? icuAvailableBeds = null;
+                if (decimal.TryParse(hospitalRecord.icu_available_beds.ToString(), out decimal icuAvailableBedsCount))
                 {
                     icuAvailableBeds = icuAvailableBedsCount;
                 }

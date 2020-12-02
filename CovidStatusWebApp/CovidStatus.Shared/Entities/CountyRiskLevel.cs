@@ -16,8 +16,10 @@ namespace CovidStatus.Shared.Entities
         
         public DateTime? EstimateRiskLevelDate { get; set; }
         public DateTime? EstimateRiskLevelDateQualification { get; set; }
+        public DateTime? EstimateZeroAvailableICUBedsDate { get; set; }
         public string EstimateRiskLevelDateDisplay { get; set; }
         public string EstimateRiskLevelDateQualificationDisplay { get; set; }
+        public string EstimateZeroAvailableICUBedsDateDisplay { get; set; }
 
         public string CSSClassBackgroundColor { get; set; }
         public string CSSClassLightBackgroundColor { get; set; }

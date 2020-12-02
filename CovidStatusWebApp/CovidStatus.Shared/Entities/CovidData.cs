@@ -12,13 +12,15 @@ namespace CovidStatus.Shared.Entities
         public string County { get; set; }
         public int NewCountConfirmed { get; set; }
         public DateTime Date { get; set; }
-        public decimal? CriticalDaysMovingRateChange { get; set; }
+        public decimal? CriticalDaysMovingCasesRateChange { get; set; }
         public decimal? CriticalDaysMovingAverageCases { get; set; }
+        public decimal? CriticalDaysMovingAverageAvailableICUBeds { get; set; }
+        public decimal? CriticalDaysMovingAvailableICUBedsRateChange { get; set; }
         public decimal? CriticalDaysMovingCasesPerOneHundredThousand { get; set; }
         public decimal? CriticalDaysMovingDeathsPerOneHundredThousand { get; set; }
         public decimal? CriticalDaysMovingAverageDeaths { get; set; }
-        public double ICUCovidPatientCount { get; set; }
-        public double ICUAvailableBedsCount { get; set; }
+        public decimal ICUCovidPatientCount { get; set; }
+        public decimal ICUAvailableBedsCount { get; set; }
 
     }
 }

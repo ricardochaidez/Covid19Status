@@ -91,30 +91,53 @@ else
             <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
                 <div class="col">
                     <div class="row">
-                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
                             <p class="boldFont">Cases per 100k population:</p>
                         </div>
-                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                            <p class="boldFont">Rate Change:</p>
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            <p class="boldFont">Cases Rate Change:</p>
+                        </div>
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            <p class="boldFont">ICU Beds Rate Change:</p>
+                        </div>
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            <p class="boldFont">Estimated Zero ICU Beds Date:</p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
                             <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
                         </div>
-                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
-                            @if (SelectedCounty.CriticalDaysMovingRateChange > 0)
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            @if (SelectedCounty.CriticalDaysMovingCasesRateChange > 0)
                             {
-                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
+                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
                             }
-                            else if (SelectedCounty.CriticalDaysMovingRateChange < 0)
+                            else if (SelectedCounty.CriticalDaysMovingCasesRateChange < 0)
                             {
-                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingRateChange.Value.ToString("P2")</p>
+                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange.Value.ToString("P2")</p>
                             }
                             else
                             {
-                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingRateChange?.ToString("P2")</p>
+                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
                             }
+                        </div>
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            @if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange < 0)
+                            {
+                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
+                            }
+                            else if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange > 0)
+                            {
+                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange.Value.ToString("P2")</p>
+                            }
+                            else
+                            {
+                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
+                            }
+                        </div>
+                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
+                            <p class="boldFont">@SelectedCounty.CurrentRiskLevel.EstimateZeroAvailableICUBedsDateDisplay</p>
                         </div>
                     </div>
                 </div>
@@ -200,7 +223,7 @@ else
                             <TabHeader Text="ICU Patients" IconCss="fas fa-procedures"></TabHeader>
                         </ChildContent>
                         <ContentTemplate>
-                            <LineChart ChartTitle="COVID-19 ICU Patients" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.ICUCovidPatients" ChartSeriesName="COVID-19 ICU Patients" LineColor="#E6B735" ChartSeriesName2="Available ICU Beds" LineColor2="#802F67"/>
+                            <LineChart ChartTitle="COVID-19 ICU Patients" CovidDataList="@CovidDataList" CovidDataType="CovidDataTypeEnum.ICUCovidPatients" ChartSeriesName="COVID-19 ICU Patients" LineColor="#E6B735" ChartSeriesName2="Available ICU Beds" LineColor2="#802F67" />
                         </ContentTemplate>
                     </TabItem>
                 </TabItems>
@@ -223,17 +246,20 @@ else
                 <GridColumns>
                     <GridColumn Field=@nameof(CovidData.ID) IsPrimaryKey="true" Visible="false" HeaderText="Data ID" Width="120"></GridColumn>
                     <GridColumn Field=@nameof(CovidData.County) Visible="false" HeaderText="County Name" Width="120"></GridColumn>
-                    <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.Date) Format="d" HeaderText="Date" Width="120"></GridColumn>
                     <GridColumn Field=@nameof(CovidData.NewCountConfirmed) HeaderText="New Cases" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(CovidData.NewCountDeaths) HeaderText="New Deaths" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(CovidData.ICUCovidPatientCount) HeaderText="ICU COVID Patients" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(CovidData.ICUAvailableBedsCount) HeaderText="Available ICU Beds" Width="100"></GridColumn>
                     <GridColumn HeaderText="@CriticalDaysMessage" HeaderTextAlign="TextAlign.Center">
                         <GridColumns>
                             <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageCases) Format="N2" HeaderText="Cases" Width="100"></GridColumn>
                             <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageDeaths) Format="N2" HeaderText="Deaths" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAverageAvailableICUBeds) Format="N2" HeaderText="Available ICU Beds" Width="100"></GridColumn>
                             <GridColumn Field=@nameof(CovidData.CriticalDaysMovingCasesPerOneHundredThousand) Format="N2" HeaderText="Cases Per 100k Population" Width="100"></GridColumn>
                             <GridColumn Field=@nameof(CovidData.CriticalDaysMovingDeathsPerOneHundredThousand) Format="N2" HeaderText="Deaths Per 100k Population" Width="100"></GridColumn>
-                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingRateChange) Format="P2" HeaderText="Cases Rate Change" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingCasesRateChange) Format="P2" HeaderText="Cases Rate Change" Width="100"></GridColumn>
+                            <GridColumn Field=@nameof(CovidData.CriticalDaysMovingAvailableICUBedsRateChange) Format="P2" HeaderText="Available ICU Beds Rate Change" Width="100"></GridColumn>
                         </GridColumns>
                     </GridColumn>
                 </GridColumns>

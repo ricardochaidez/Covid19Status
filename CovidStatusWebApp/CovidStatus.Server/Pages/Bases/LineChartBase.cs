@@ -74,8 +74,8 @@ namespace CovidStatus.Server.Pages.Bases
                         dataPoint.yValue = (double)record.CriticalDaysMovingDeathsPerOneHundredThousand;
                         break;
                     case CovidDataTypeEnum.ICUCovidPatients:
-                        dataPoint.yValue = record.ICUCovidPatientCount;
-                        dataPoint.yValue2 = record.ICUAvailableBedsCount;
+                        dataPoint.yValue = (double)record.ICUCovidPatientCount;
+                        dataPoint.yValue2 = (double)record.ICUAvailableBedsCount;
                         break;
                     default:
                         dataPoint.yValue = record.NewCountConfirmed;
@@ -85,10 +85,15 @@ namespace CovidStatus.Server.Pages.Bases
                 chartData.Add(dataPoint);
             }
 
-            MaxChartNumber = chartData.OrderByDescending(x => x.yValue).FirstOrDefault()?.yValue ?? 0;
+            var yValue1MaxValue = chartData.OrderByDescending(x => x.yValue).FirstOrDefault()?.yValue ?? 0;
+            var yValue2MaxValue = chartData.OrderByDescending(x => x.yValue2).FirstOrDefault()?.yValue2 ?? 0;
+            var yValue1MinValue = chartData.OrderBy(x => x.yValue).FirstOrDefault()?.yValue ?? 0;
+            var yValue2MinValue = chartData.OrderBy(x => x.yValue2).FirstOrDefault()?.yValue2 ?? 0;
+
+            MaxChartNumber = yValue1MaxValue > yValue2MaxValue ? yValue1MaxValue : yValue2MaxValue;
             var bufferMaxChartNumber = MaxChartNumber * 0.10;
             MaxChartNumber = MaxChartNumber + bufferMaxChartNumber;
-            var dataMinValue = chartData.OrderBy(x => x.yValue).FirstOrDefault()?.yValue ?? 0;
+            var dataMinValue = yValue1MinValue < yValue2MinValue ? yValue1MinValue : yValue2MinValue;
 
             if (dataMinValue > 0)
             {

@@ -18,81 +18,108 @@ namespace CovidStatus.Server.Helper
 
                 decimal? criticalDaysMovingCasesSum = 0;
                 decimal? criticalDaysMovingDeathsSum = 0;
+                decimal? criticalDaysMovingAvailableICUBedsSum = 0;
                 int count = 0;
                 foreach (var record in lastcriticalDaysCovidData)
                 {
                     criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.NewCountConfirmed;
                     criticalDaysMovingDeathsSum = criticalDaysMovingDeathsSum + record.NewCountDeaths;
+                    criticalDaysMovingAvailableICUBedsSum = criticalDaysMovingAvailableICUBedsSum + record.ICUAvailableBedsCount;
                     count++;
                 }
 
                 decimal? criticalDaysMovingAverageCases = criticalDaysMovingCasesSum / (count == 0 ? 1 : count);
                 decimal? criticalDaysMovingAverageDeaths = criticalDaysMovingDeathsSum / (count == 0 ? 1 : count);
+                decimal? criticalDaysMovingAverageAvailableICUBeds = criticalDaysMovingAvailableICUBedsSum / (count == 0 ? 1 : count);
                 decimal? covidCasesPerOneHundredThousand = (decimal)(criticalDaysMovingAverageCases / ((decimal)selectedCounty.Population / (decimal)100000));
                 decimal? covidDeathsPerOneHundredThousand = (decimal)(criticalDaysMovingAverageDeaths / ((decimal)selectedCounty.Population / (decimal)100000));
 
                 covidRecord.CriticalDaysMovingAverageCases = criticalDaysMovingAverageCases;
                 covidRecord.CriticalDaysMovingAverageDeaths = criticalDaysMovingAverageDeaths;
+                covidRecord.CriticalDaysMovingAverageAvailableICUBeds = criticalDaysMovingAverageAvailableICUBeds;
                 covidRecord.CriticalDaysMovingCasesPerOneHundredThousand = covidCasesPerOneHundredThousand;
                 covidRecord.CriticalDaysMovingDeathsPerOneHundredThousand = covidDeathsPerOneHundredThousand;
             }
 
-            //Get rate change based on seven/fourteen day moving
+            //Get rate change based on critical days moving
             foreach (var covidRecord in covidRecords)
             {
-                decimal? previousDatecriticalDaysMovingAverage = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverageCases;
+                //Cases
+                decimal? previousDatecriticalDaysMovingAverageCases = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverageCases;
 
-                decimal? sevenRateChange = 0;
-                if (covidRecord.CriticalDaysMovingAverageCases != null && previousDatecriticalDaysMovingAverage != null && previousDatecriticalDaysMovingAverage != 0)
+                decimal? criticalCasesRateChange = 0;
+                if (covidRecord.CriticalDaysMovingAverageCases != null && previousDatecriticalDaysMovingAverageCases != null && previousDatecriticalDaysMovingAverageCases != 0)
                 {
-                    sevenRateChange = (decimal)covidRecord.CriticalDaysMovingAverageCases / (decimal)previousDatecriticalDaysMovingAverage;
-                    sevenRateChange = sevenRateChange - 1;
+                    criticalCasesRateChange = (decimal)covidRecord.CriticalDaysMovingAverageCases / (decimal)previousDatecriticalDaysMovingAverageCases;
+                    criticalCasesRateChange = criticalCasesRateChange - 1;
                 }
-                covidRecord.CriticalDaysMovingRateChange = sevenRateChange;
+                covidRecord.CriticalDaysMovingCasesRateChange = criticalCasesRateChange;
+
+                //Available ICU Beds
+                decimal? previousDatecriticalDaysMovingAverageAvailableICUBeds = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverageAvailableICUBeds;
+
+                decimal? criticalAvailableICUBedsRateChange = 0;
+                if (covidRecord.CriticalDaysMovingAverageAvailableICUBeds != null && previousDatecriticalDaysMovingAverageAvailableICUBeds != null && previousDatecriticalDaysMovingAverageAvailableICUBeds != 0)
+                {
+                    criticalAvailableICUBedsRateChange = (decimal)covidRecord.CriticalDaysMovingAverageAvailableICUBeds / (decimal)previousDatecriticalDaysMovingAverageAvailableICUBeds;
+                    criticalAvailableICUBedsRateChange = criticalAvailableICUBedsRateChange - 1;
+                }
+                covidRecord.CriticalDaysMovingAvailableICUBedsRateChange = criticalAvailableICUBedsRateChange;
             }
         }
 
         public void PopulateCountyAggregates(List<CovidData> covidRecords, County selectedCounty, DateTime lastUpdateDate, int criticalDaysCount)
         {
-            //Get seven day moving averages
+            //Get critical day moving averages
             var criticalDaysCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-(criticalDaysCount)) && x.Date <= lastUpdateDate).ToList();
 
             decimal? criticalDaysMovingCasesPerOneHundredThousandSum = 0;
             decimal? criticalDaysMovingRateChangeSum = 0;
             decimal? criticalDaysMovingCasesSum = 0;
+            decimal? criticalDaysMovingAvailableICUBedsSum = 0;
+            decimal? criticalDaysMovingAvailableICUBedsRateChangeSum = 0;
             int criticalDayscount = 0;
             foreach (var record in criticalDaysCovidData)
             {
                 criticalDaysMovingCasesPerOneHundredThousandSum = criticalDaysMovingCasesPerOneHundredThousandSum + record.CriticalDaysMovingCasesPerOneHundredThousand;
-                criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingRateChange;
+                criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingCasesRateChange;
                 criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.CriticalDaysMovingAverageCases;
+                criticalDaysMovingAvailableICUBedsSum = criticalDaysMovingAvailableICUBedsSum + record.CriticalDaysMovingAverageAvailableICUBeds;
+                criticalDaysMovingAvailableICUBedsRateChangeSum = criticalDaysMovingAvailableICUBedsRateChangeSum + record.CriticalDaysMovingAvailableICUBedsRateChange;
                 criticalDayscount++;
             }
 
             decimal? criticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
             decimal? criticalDaysMovingRateChangeAverage = criticalDaysMovingRateChangeSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
             decimal? criticalDaysMovingCasesAverage = criticalDaysMovingCasesSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
+            decimal? criticalDaysMovingAvailableICUBedsAverage = criticalDaysMovingAvailableICUBedsSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
+            decimal? criticalDaysMovingAvailableICUBedsRateChangeAverage = criticalDaysMovingAvailableICUBedsRateChangeSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
 
             selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
-            selectedCounty.CriticalDaysMovingRateChange = criticalDaysMovingRateChangeAverage;
+            selectedCounty.CriticalDaysMovingCasesRateChange = criticalDaysMovingRateChangeAverage;
             selectedCounty.CriticalDaysMovingCasesAverage = criticalDaysMovingCasesAverage;
+            selectedCounty.CriticalDaysMovingAvailableICUBedsAverage = criticalDaysMovingAvailableICUBedsAverage;
+            selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange = criticalDaysMovingAvailableICUBedsRateChangeAverage;
             selectedCounty.RiskLevels = GetCountyRiskLevels(selectedCounty, lastUpdateDate);
         }
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
         {
-            selectedCounty.AreCasesRising = selectedCounty.CriticalDaysMovingRateChange >= 0;
+            selectedCounty.AreCasesRising = selectedCounty.CriticalDaysMovingCasesRateChange >= 0;
+            selectedCounty.AreAvailableICUBedsDeclining = selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange < 0;
 
-            var defaultDateDisplay = selectedCounty.AreCasesRising ? "-" : "N/A";
+            var defaultRiskLevelDateDisplay = selectedCounty.AreCasesRising ? "-" : "N/A";
+            var defaultZeroAvailableICUBedsDateDisplay = "N/A";
+
             var riskLevelList = new List<CountyRiskLevel>();
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLevelName = "Minimal", RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "minimalBackgroundColor", CSSClassLightBackgroundColor = "minimalBackgroundLightColor" });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLevelName = "Moderate", RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "moderateBackgroundColor", CSSClassLightBackgroundColor = "moderateBackgroundLightColor" });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLevelName = "Substantial", RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "substantialBackgroundColor", CSSClassLightBackgroundColor = "substantialBackgroundLightColor" });
-            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLevelName = "Widespread", RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax, EstimateRiskLevelDateDisplay = defaultDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultDateDisplay, CSSClassBackgroundColor = "widespreadBackgroundColor", CSSClassLightBackgroundColor = "widespreadBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 1, RiskLevel = RiskLevel.Minimal, RiskLevelName = "Minimal", RiskLelvelCasesMin = AppConfigurationSettings.MinimalMin, RiskLelvelCasesMax = AppConfigurationSettings.MinimalMax, EstimateRiskLevelDateDisplay = defaultRiskLevelDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultRiskLevelDateDisplay, EstimateZeroAvailableICUBedsDateDisplay = defaultZeroAvailableICUBedsDateDisplay, CSSClassBackgroundColor = "minimalBackgroundColor", CSSClassLightBackgroundColor = "minimalBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 2, RiskLevel = RiskLevel.Moderate, RiskLevelName = "Moderate", RiskLelvelCasesMin = AppConfigurationSettings.ModerateMin, RiskLelvelCasesMax = AppConfigurationSettings.ModerateMax, EstimateRiskLevelDateDisplay = defaultRiskLevelDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultRiskLevelDateDisplay, EstimateZeroAvailableICUBedsDateDisplay = defaultZeroAvailableICUBedsDateDisplay, CSSClassBackgroundColor = "moderateBackgroundColor", CSSClassLightBackgroundColor = "moderateBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 3, RiskLevel = RiskLevel.Substantial, RiskLevelName = "Substantial", RiskLelvelCasesMin = AppConfigurationSettings.SubstantialMin, RiskLelvelCasesMax = AppConfigurationSettings.SubstantialMax, EstimateRiskLevelDateDisplay = defaultRiskLevelDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultRiskLevelDateDisplay, EstimateZeroAvailableICUBedsDateDisplay = defaultZeroAvailableICUBedsDateDisplay, CSSClassBackgroundColor = "substantialBackgroundColor", CSSClassLightBackgroundColor = "substantialBackgroundLightColor" });
+            riskLevelList.Add(new CountyRiskLevel { RiskLevelOrder = 4, RiskLevel = RiskLevel.Widespread, RiskLevelName = "Widespread", RiskLelvelCasesMin = AppConfigurationSettings.WidespreadMin, RiskLelvelCasesMax = AppConfigurationSettings.WidespreadMax, EstimateRiskLevelDateDisplay = defaultRiskLevelDateDisplay, EstimateRiskLevelDateQualificationDisplay = defaultRiskLevelDateDisplay, EstimateZeroAvailableICUBedsDateDisplay = defaultZeroAvailableICUBedsDateDisplay, CSSClassBackgroundColor = "widespreadBackgroundColor", CSSClassLightBackgroundColor = "widespreadBackgroundLightColor" });
 
             foreach (var countyRiskLevel in riskLevelList)
             {
-                PopulateRiskLevel(countyRiskLevel, selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage, selectedCounty.CriticalDaysMovingRateChange, lastUpdateDate);
+                PopulateRiskLevel(countyRiskLevel, selectedCounty, lastUpdateDate);
             }
 
             selectedCounty.CurrentRiskLevel = riskLevelList.FirstOrDefault(x => x.IsCurrentRiskLevel) ?? new CountyRiskLevel { RiskLevel = RiskLevel.Widespread };
@@ -128,28 +155,32 @@ namespace CovidStatus.Server.Helper
             return riskLevelList;
         }
 
-        private void PopulateRiskLevel(CountyRiskLevel countyRiskLevel, decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, decimal? criticalDaysMovingRateChange, DateTime latestUpdateDate)
+        private void PopulateRiskLevel(CountyRiskLevel countyRiskLevel, County selectedCounty, DateTime latestUpdateDate)
         {
-            if (criticalDaysMovingCasesPerOneHundredThousandAverage >= countyRiskLevel.RiskLelvelCasesMin &&
-                criticalDaysMovingCasesPerOneHundredThousandAverage <= countyRiskLevel.RiskLelvelCasesMax)
+            if (selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage >= countyRiskLevel.RiskLelvelCasesMin &&
+                selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage <= countyRiskLevel.RiskLelvelCasesMax)
             {
                 countyRiskLevel.IsCurrentRiskLevel = true;
             }
-            if (criticalDaysMovingCasesPerOneHundredThousandAverage < countyRiskLevel.RiskLelvelCasesMin)
+            if (selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage < countyRiskLevel.RiskLelvelCasesMin)
             {
                 countyRiskLevel.IsPassedRiskLevel = true;
             }
-            if (criticalDaysMovingCasesPerOneHundredThousandAverage > countyRiskLevel.RiskLelvelCasesMax)
+            if (selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage > countyRiskLevel.RiskLelvelCasesMax)
             {
                 countyRiskLevel.IsFutureRiskLevel = true;
             }
 
-            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(countyRiskLevel, criticalDaysMovingCasesPerOneHundredThousandAverage, criticalDaysMovingRateChange);
+            DateTime? riskLevelDate = EstimateCountyRiskLevelDate(countyRiskLevel, selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage, selectedCounty.CriticalDaysMovingCasesRateChange);
+            DateTime? zeroAvailableICUBedsDate = EstimateZeroAvailableICUBedsDate(selectedCounty.CriticalDaysMovingAvailableICUBedsAverage, selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange);
             countyRiskLevel.EstimateRiskLevelDate = riskLevelDate;
-            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : criticalDaysMovingRateChange >= 0 ? "-" : "N/A";
+            string riskLevelDateDisplay = riskLevelDate != null ? $"{riskLevelDate:MMMM d, yyyy}" : selectedCounty.CriticalDaysMovingCasesRateChange >= 0 ? "-" : "N/A";
             countyRiskLevel.EstimateRiskLevelDateDisplay = riskLevelDateDisplay;
             countyRiskLevel.EstimateRiskLevelDateQualification = riskLevelDate;
             countyRiskLevel.EstimateRiskLevelDateQualificationDisplay = riskLevelDateDisplay;
+            countyRiskLevel.EstimateZeroAvailableICUBedsDate = zeroAvailableICUBedsDate;
+            string zeroAvailableICUBedsDateDisplay = zeroAvailableICUBedsDate != null ? $"{zeroAvailableICUBedsDate:MMMM d, yyyy}" : "N/A";
+            countyRiskLevel.EstimateZeroAvailableICUBedsDateDisplay = zeroAvailableICUBedsDateDisplay;
         }
 
         private DateTime? EstimateCountyRiskLevelDate(CountyRiskLevel countyRiskLevel, decimal? criticalDaysMovingCasesPerOneHundredThousandAverage, 
@@ -211,6 +242,23 @@ namespace CovidStatus.Server.Helper
             }
 
             return countyRiskLevelDate.AddDays(daysToAdd);
+        }
+
+        private DateTime? EstimateZeroAvailableICUBedsDate(decimal? criticalDaysMovingAvailableICUBedsAverage, decimal? criticalDaysMovingAvailableICUBedsRateChange)
+        {
+            if (criticalDaysMovingAvailableICUBedsRateChange > 0) { return null;} //Available ICU Beds are going up
+            DateTime zeroAvaiableICUBedsDate = DateTime.Today;
+            decimal? availableICUBedsAverage = criticalDaysMovingAvailableICUBedsAverage;
+            int daysToAdd = 0;
+
+            while (availableICUBedsAverage > 1)
+            {
+                var availableICUBedsChange = (decimal)(availableICUBedsAverage * (decimal)criticalDaysMovingAvailableICUBedsRateChange);
+                availableICUBedsAverage += availableICUBedsChange;
+                daysToAdd++;
+            }
+
+            return zeroAvaiableICUBedsDate.AddDays(daysToAdd);
         }
     }
 }
