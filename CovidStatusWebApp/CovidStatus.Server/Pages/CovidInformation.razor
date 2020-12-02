@@ -91,53 +91,65 @@ else
             <div class="row" style="background-color: #f9f9f9; border-radius: 15px;">
                 <div class="col">
                     <div class="row">
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">Cases per 100k population:</p>
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">Cases Rate Change:</p>
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">ICU Beds Rate Change:</p>
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">Estimated Zero ICU Beds Date:</p>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p class="boldFont">Cases per 100k population:</p>
+                                </div>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p class="boldFont">Cases Rate Change:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p>@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
+                                </div>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    @if (SelectedCounty.CriticalDaysMovingCasesRateChange > 0)
+                                    {
+                                        <p style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
+                                    }
+                                    else if (SelectedCounty.CriticalDaysMovingCasesRateChange < 0)
+                                    {
+                                        <p style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange.Value.ToString("P2")</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage?.ToString("N2")</p>
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            @if (SelectedCounty.CriticalDaysMovingCasesRateChange > 0)
-                            {
-                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
-                            }
-                            else if (SelectedCounty.CriticalDaysMovingCasesRateChange < 0)
-                            {
-                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingCasesRateChange.Value.ToString("P2")</p>
-                            }
-                            else
-                            {
-                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingCasesRateChange?.ToString("P2")</p>
-                            }
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            @if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange < 0)
-                            {
-                                <p class="boldFont" style="color: red"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
-                            }
-                            else if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange > 0)
-                            {
-                                <p class="boldFont" style="color: green"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange.Value.ToString("P2")</p>
-                            }
-                            else
-                            {
-                                <p class="boldFont">@SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
-                            }
-                        </div>
-                        <div class="col-3 col-sm-3 col-md-3 col-lg-3 d-flex justify-content-center centeredText">
-                            <p class="boldFont">@SelectedCounty.CurrentRiskLevel.EstimateZeroAvailableICUBedsDateDisplay</p>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p class="boldFont">ICU Beds Rate Change:</p>
+                                </div>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p class="boldFont">Estimated Zero ICU Beds Date:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    @if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange < 0)
+                                    {
+                                        <p style="color: red"><i class="fas fa-arrow-down"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
+                                    }
+                                    else if (SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange > 0)
+                                    {
+                                        <p style="color: green"><i class="fas fa-arrow-up"></i> @SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange.Value.ToString("P2")</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@SelectedCounty.CriticalDaysMovingAvailableICUBedsRateChange?.ToString("P2")</p>
+                                    }
+                                </div>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 d-flex justify-content-center centeredText">
+                                    <p>@SelectedCounty.CurrentRiskLevel.EstimateZeroAvailableICUBedsDateDisplay</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
