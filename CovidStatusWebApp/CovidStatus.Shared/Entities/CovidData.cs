@@ -18,5 +18,7 @@ namespace CovidStatus.Shared.Entities
         public decimal? CriticalDaysMovingDeathsPerOneHundredThousand { get; set; }
         public decimal? CriticalDaysMovingAverageDeaths { get; set; }
         public double ICUCovidPatientCount { get; set; }
+        public double ICUAvailableBedsCount { get; set; }
+
     }
 }

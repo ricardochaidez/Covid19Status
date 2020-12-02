@@ -19,5 +19,14 @@
             <ChartMarker Visible="false" Width="10" Height="10">
             </ChartMarker>
         </ChartSeries>
+        @if (!string.IsNullOrEmpty(ChartSeriesName2))
+            {
+            <ChartSeries DataSource="@ChartData" Name="@ChartSeriesName2" XName="xValue" Width="2" Fill="@LineColor2"
+                         Opacity="1" YName="yValue2" Type="ChartSeriesType.Spline">
+                <ChartMarker Visible="false" Width="10" Height="10">
+                </ChartMarker>
+            </ChartSeries>
+        }
+
     </ChartSeriesCollection>
 </SfChart>

@@ -99,6 +99,14 @@ namespace CovidStatus.API.Repositories
                     icuCovidPatient = icuCovidPatientCount;
                 }
                 covidRecord.ICUCovidPatientCount = icuCovidPatient ?? 0;
+
+                double? icuAvailableBeds = null;
+                if (double.TryParse(hospitalRecord.icu_available_beds.ToString(), out double icuAvailableBedsCount))
+                {
+                    icuAvailableBeds = icuAvailableBedsCount;
+                }
+                covidRecord.ICUAvailableBedsCount = icuAvailableBeds ?? 0;
+
             }
         }
 

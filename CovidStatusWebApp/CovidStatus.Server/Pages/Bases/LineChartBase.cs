@@ -13,9 +13,12 @@ namespace CovidStatus.Server.Pages.Bases
     {
         [Parameter] public List<CovidData> CovidDataList { get; set; }
         [Parameter] public string ChartSeriesName { get; set; }
+        [Parameter] public string ChartSeriesName2 { get; set; }
         [Parameter] public string ChartTitle { get; set; }
         [Parameter] public string LineColor { get; set; }
+        [Parameter] public string LineColor2 { get; set; }
         [Parameter] public CovidDataTypeEnum CovidDataType { get; set; }
+
 
         public List<LineChartModel> ChartData { get; set; }
         public double MaxChartNumber { get; set; }
@@ -27,6 +30,7 @@ namespace CovidStatus.Server.Pages.Bases
             if (String.IsNullOrEmpty(LineColor))
             {
                 LineColor = "#000000";
+                LineColor2 = "#808080";
             }
 
             ChartData = await GetChartData(CovidDataList);
@@ -71,6 +75,7 @@ namespace CovidStatus.Server.Pages.Bases
                         break;
                     case CovidDataTypeEnum.ICUCovidPatients:
                         dataPoint.yValue = record.ICUCovidPatientCount;
+                        dataPoint.yValue2 = record.ICUAvailableBedsCount;
                         break;
                     default:
                         dataPoint.yValue = record.NewCountConfirmed;
