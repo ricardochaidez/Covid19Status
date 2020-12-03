@@ -17,5 +17,6 @@ namespace CovidStatus.Shared.Entities
         public CountyRiskLevel CurrentRiskLevel { get; set; }
         public bool AreCasesRising { get; set; }
         public bool AreAvailableICUBedsDeclining { get; set; }
+        public bool AreThereAnyAvailableICUBedsNow { get; set; }
     }
 }

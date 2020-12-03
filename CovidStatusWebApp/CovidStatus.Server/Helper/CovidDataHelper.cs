@@ -14,13 +14,13 @@ namespace CovidStatus.Server.Helper
             //Get seven day moving
             foreach (var covidRecord in covidRecords)
             {
-                var lastcriticalDaysCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-(criticalDaysCount)) && x.Date <= covidRecord.Date).ToList();
+                List<CovidData> lastCriticalDaysCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-(criticalDaysCount)) && x.Date <= covidRecord.Date).ToList();
 
                 decimal? criticalDaysMovingCasesSum = 0;
                 decimal? criticalDaysMovingDeathsSum = 0;
                 decimal? criticalDaysMovingAvailableICUBedsSum = 0;
                 int count = 0;
-                foreach (var record in lastcriticalDaysCovidData)
+                foreach (var record in lastCriticalDaysCovidData)
                 {
                     criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.NewCountConfirmed;
                     criticalDaysMovingDeathsSum = criticalDaysMovingDeathsSum + record.NewCountDeaths;
@@ -42,7 +42,7 @@ namespace CovidStatus.Server.Helper
             }
 
             //Get rate change based on critical days moving
-            foreach (var covidRecord in covidRecords)
+            foreach (CovidData covidRecord in covidRecords)
             {
                 //Cases
                 decimal? previousDatecriticalDaysMovingAverageCases = covidRecords.FirstOrDefault(x => x.Date == covidRecord.Date.AddDays(-1))?.CriticalDaysMovingAverageCases;
@@ -71,7 +71,7 @@ namespace CovidStatus.Server.Helper
         public void PopulateCountyAggregates(List<CovidData> covidRecords, County selectedCounty, DateTime lastUpdateDate, int criticalDaysCount)
         {
             //Get critical day moving averages
-            var criticalDaysCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-(criticalDaysCount)) && x.Date <= lastUpdateDate).ToList();
+            List<CovidData> criticalDaysCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-(criticalDaysCount)) && x.Date <= lastUpdateDate).ToList();
 
             decimal? criticalDaysMovingCasesPerOneHundredThousandSum = 0;
             decimal? criticalDaysMovingRateChangeSum = 0;
@@ -79,7 +79,8 @@ namespace CovidStatus.Server.Helper
             decimal? criticalDaysMovingAvailableICUBedsSum = 0;
             decimal? criticalDaysMovingAvailableICUBedsRateChangeSum = 0;
             int criticalDayscount = 0;
-            foreach (var record in criticalDaysCovidData)
+
+            foreach (CovidData record in criticalDaysCovidData)
             {
                 criticalDaysMovingCasesPerOneHundredThousandSum = criticalDaysMovingCasesPerOneHundredThousandSum + record.CriticalDaysMovingCasesPerOneHundredThousand;
                 criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingCasesRateChange;
@@ -101,6 +102,7 @@ namespace CovidStatus.Server.Helper
             selectedCounty.CriticalDaysMovingAvailableICUBedsAverage = criticalDaysMovingAvailableICUBedsAverage;
             selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange = criticalDaysMovingAvailableICUBedsRateChangeAverage;
             selectedCounty.RiskLevels = GetCountyRiskLevels(selectedCounty, lastUpdateDate);
+            selectedCounty.AreThereAnyAvailableICUBedsNow = criticalDaysCovidData.FirstOrDefault(x => x.Date == lastUpdateDate)?.ICUAvailableBedsCount > 0;
         }
 
         private List<CountyRiskLevel> GetCountyRiskLevels(County selectedCounty, DateTime lastUpdateDate)
