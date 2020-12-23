@@ -25,12 +25,12 @@ namespace CovidStatus.API.Repositories
             {
                 var covidData = new CovidData();
                 covidData.ID = covidRecord._id;
-                covidData.TotalCountConfirmed = covidRecord.totalcountconfirmed;
+                covidData.TotalCountConfirmed = covidRecord.totalcountconfirmed ?? 0;
                 covidData.NewCountDeaths = covidRecord.newcountdeaths;
-                covidData.TotalCountDeaths = covidRecord.totalcountdeaths;
-                covidData.Rank = covidRecord.rank;
+                covidData.TotalCountDeaths = covidRecord.totalcountdeaths ?? 0;
+                covidData.Rank = covidRecord.rank ?? 0;
                 covidData.County = covidRecord.county;
-                covidData.NewCountConfirmed = covidRecord.newcountconfirmed;
+                covidData.NewCountConfirmed = covidRecord.newcountconfirmed ?? 0;
                 covidData.Date = covidRecord.date;
                 covidDataList.Add(covidData);
             }

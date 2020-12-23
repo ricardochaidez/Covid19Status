@@ -16,21 +16,9 @@ namespace CovidStatus.Server.Helper
             {
                 List<CovidData> lastCriticalDaysCovidData = covidRecords.Where(x => x.Date > covidRecord.Date.AddDays(-(criticalDaysCount)) && x.Date <= covidRecord.Date).ToList();
 
-                decimal? criticalDaysMovingCasesSum = 0;
-                decimal? criticalDaysMovingDeathsSum = 0;
-                decimal? criticalDaysMovingAvailableICUBedsSum = 0;
-                int count = 0;
-                foreach (var record in lastCriticalDaysCovidData)
-                {
-                    criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.NewCountConfirmed;
-                    criticalDaysMovingDeathsSum = criticalDaysMovingDeathsSum + record.NewCountDeaths;
-                    criticalDaysMovingAvailableICUBedsSum = criticalDaysMovingAvailableICUBedsSum + record.ICUAvailableBedsCount;
-                    count++;
-                }
-
-                decimal? criticalDaysMovingAverageCases = criticalDaysMovingCasesSum / (count == 0 ? 1 : count);
-                decimal? criticalDaysMovingAverageDeaths = criticalDaysMovingDeathsSum / (count == 0 ? 1 : count);
-                decimal? criticalDaysMovingAverageAvailableICUBeds = criticalDaysMovingAvailableICUBedsSum / (count == 0 ? 1 : count);
+                decimal? criticalDaysMovingAverageCases = (decimal)lastCriticalDaysCovidData.Average(x => x.NewCountConfirmed);
+                decimal? criticalDaysMovingAverageDeaths = (decimal)lastCriticalDaysCovidData.Average(x => x.NewCountDeaths);
+                decimal? criticalDaysMovingAverageAvailableICUBeds = (decimal)lastCriticalDaysCovidData.Average(x => x.ICUAvailableBedsCount);
                 decimal? covidCasesPerOneHundredThousand = (decimal)(criticalDaysMovingAverageCases / ((decimal)selectedCounty.Population / (decimal)100000));
                 decimal? covidDeathsPerOneHundredThousand = (decimal)(criticalDaysMovingAverageDeaths / ((decimal)selectedCounty.Population / (decimal)100000));
 
@@ -73,34 +61,11 @@ namespace CovidStatus.Server.Helper
             //Get critical day moving averages
             List<CovidData> criticalDaysCovidData = covidRecords.Where(x => x.Date > lastUpdateDate.AddDays(-(criticalDaysCount)) && x.Date <= lastUpdateDate).ToList();
 
-            decimal? criticalDaysMovingCasesPerOneHundredThousandSum = 0;
-            decimal? criticalDaysMovingRateChangeSum = 0;
-            decimal? criticalDaysMovingCasesSum = 0;
-            decimal? criticalDaysMovingAvailableICUBedsSum = 0;
-            decimal? criticalDaysMovingAvailableICUBedsRateChangeSum = 0;
-            int criticalDayscount = 0;
-
-            foreach (CovidData record in criticalDaysCovidData)
-            {
-                criticalDaysMovingCasesPerOneHundredThousandSum = criticalDaysMovingCasesPerOneHundredThousandSum + record.CriticalDaysMovingCasesPerOneHundredThousand;
-                criticalDaysMovingRateChangeSum = criticalDaysMovingRateChangeSum + record.CriticalDaysMovingCasesRateChange;
-                criticalDaysMovingCasesSum = criticalDaysMovingCasesSum + record.CriticalDaysMovingAverageCases;
-                criticalDaysMovingAvailableICUBedsSum = criticalDaysMovingAvailableICUBedsSum + record.CriticalDaysMovingAverageAvailableICUBeds;
-                criticalDaysMovingAvailableICUBedsRateChangeSum = criticalDaysMovingAvailableICUBedsRateChangeSum + record.CriticalDaysMovingAvailableICUBedsRateChange;
-                criticalDayscount++;
-            }
-
-            decimal? criticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
-            decimal? criticalDaysMovingRateChangeAverage = criticalDaysMovingRateChangeSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
-            decimal? criticalDaysMovingCasesAverage = criticalDaysMovingCasesSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
-            decimal? criticalDaysMovingAvailableICUBedsAverage = criticalDaysMovingAvailableICUBedsSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
-            decimal? criticalDaysMovingAvailableICUBedsRateChangeAverage = criticalDaysMovingAvailableICUBedsRateChangeSum / (criticalDayscount == 0 ? 1 : criticalDayscount);
-
-            selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysMovingCasesPerOneHundredThousandAverage;
-            selectedCounty.CriticalDaysMovingCasesRateChange = criticalDaysMovingRateChangeAverage;
-            selectedCounty.CriticalDaysMovingCasesAverage = criticalDaysMovingCasesAverage;
-            selectedCounty.CriticalDaysMovingAvailableICUBedsAverage = criticalDaysMovingAvailableICUBedsAverage;
-            selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange = criticalDaysMovingAvailableICUBedsRateChangeAverage;
+            selectedCounty.CriticalDaysMovingCasesPerOneHundredThousandAverage = criticalDaysCovidData.Average(x => x.CriticalDaysMovingCasesPerOneHundredThousand);
+            selectedCounty.CriticalDaysMovingCasesRateChange = criticalDaysCovidData.Average(x => x.CriticalDaysMovingCasesRateChange);
+            selectedCounty.CriticalDaysMovingCasesAverage = criticalDaysCovidData.Average(x => x.CriticalDaysMovingAverageCases);
+            selectedCounty.CriticalDaysMovingAvailableICUBedsAverage = criticalDaysCovidData.Average(x => x.CriticalDaysMovingAverageAvailableICUBeds);
+            selectedCounty.CriticalDaysMovingAvailableICUBedsRateChange = criticalDaysCovidData.Average(x => x.CriticalDaysMovingAvailableICUBedsRateChange);
             selectedCounty.RiskLevels = GetCountyRiskLevels(selectedCounty, lastUpdateDate);
             selectedCounty.AreThereAnyAvailableICUBedsNow = criticalDaysCovidData.FirstOrDefault(x => x.Date == lastUpdateDate)?.ICUAvailableBedsCount > 0;
         }

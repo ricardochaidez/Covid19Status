@@ -23,12 +23,12 @@ namespace CovidStatus.API.Entities
 
         public class Record
         {
-            public double totalcountconfirmed { get; set; }
+            public double? totalcountconfirmed { get; set; }
             public int newcountdeaths { get; set; }
-            public double totalcountdeaths { get; set; }
-            public double rank { get; set; }
+            public double? totalcountdeaths { get; set; }
+            public double? rank { get; set; }
             public string county { get; set; }
-            public int newcountconfirmed { get; set; }
+            public int? newcountconfirmed { get; set; }
             public DateTime date { get; set; }
             public int _id { get; set; }
         }
