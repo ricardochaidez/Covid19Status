@@ -21,17 +21,28 @@ namespace CovidStatus.API.Repositories
             CovidDataEntity.Root covidDataDeserialized = JsonConvert.DeserializeObject<CovidDataEntity.Root>(covidDataJson);
 
             var covidDataList = new List<CovidData>();
+            double totalCountConfirmed = 0;
+            double totalcountdeaths = 0;
+
             foreach (CovidDataEntity.Record covidRecord in covidDataDeserialized.result.records)
             {
+                DateTime covidDate;
+                if(!DateTime.TryParse(covidRecord.date, out covidDate))
+                {
+                    continue;
+                }
+                totalCountConfirmed += covidRecord.reported_cases ?? 0;
+                totalcountdeaths += covidRecord.reported_deaths ?? 0;
+
                 var covidData = new CovidData();
                 covidData.ID = covidRecord._id;
-                covidData.TotalCountConfirmed = covidRecord.totalcountconfirmed ?? 0;
-                covidData.NewCountDeaths = covidRecord.newcountdeaths;
-                covidData.TotalCountDeaths = covidRecord.totalcountdeaths ?? 0;
+                covidData.TotalCountConfirmed = totalCountConfirmed;
+                covidData.NewCountDeaths = covidRecord.reported_deaths != null ? (int)covidRecord.reported_deaths : 0;
+                covidData.TotalCountDeaths = totalcountdeaths;
                 covidData.Rank = covidRecord.rank ?? 0;
-                covidData.County = covidRecord.county;
-                covidData.NewCountConfirmed = covidRecord.newcountconfirmed ?? 0;
-                covidData.Date = covidRecord.date;
+                covidData.County = covidRecord.area;
+                covidData.NewCountConfirmed = covidRecord.reported_cases != null ? (int)covidRecord.reported_cases : 0;
+                covidData.Date = covidDate;
                 covidDataList.Add(covidData);
             }
 

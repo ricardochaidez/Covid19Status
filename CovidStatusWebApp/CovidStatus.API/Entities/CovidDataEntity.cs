@@ -7,30 +7,27 @@ namespace CovidStatus.API.Entities
 {
     public class CovidDataEntity
     {
-        public class Info
-        {
-            public string notes { get; set; }
-            public string type_override { get; set; }
-            public string label { get; set; }
-        }
-
         public class Field
         {
             public string type { get; set; }
             public string id { get; set; }
-            public Info info { get; set; }
         }
 
         public class Record
         {
-            public double? totalcountconfirmed { get; set; }
-            public int newcountdeaths { get; set; }
-            public double? totalcountdeaths { get; set; }
+            public string area { get; set; }
+            public double? deaths { get; set; }
+            public double? reported_cases { get; set; }
             public double? rank { get; set; }
-            public string county { get; set; }
-            public int? newcountconfirmed { get; set; }
-            public DateTime date { get; set; }
+            public string area_type { get; set; }
+            public double? reported_deaths { get; set; }
+            public string total_tests { get; set; }
+            public string reported_tests { get; set; }
+            public string date { get; set; }
+            public double? cases { get; set; }
             public int _id { get; set; }
+            public string positive_tests { get; set; }
+            public string population { get; set; }
         }
 
         public class Links
