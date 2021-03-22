@@ -24,25 +24,24 @@ namespace CovidStatus.API.Repositories
 
             foreach (CovidDataEntity.Record covidRecord in covidDataDeserialized.result.records)
             {
-                DateTime? covidDate = covidRecord.DATE;
+                DateTime? covidDate = covidRecord.date;
                 if (covidDate is null)
                 {
                     continue;
                 }
                 DateTime yesterdayDate = DateTime.Now.AddDays(-1);
                 if (covidDate.Value.ToString("d") == yesterdayDate.ToString("d")
-                    && (covidRecord.REPORTED_DEATHS == null && covidRecord.REPORTED_CASES == null)) //CA Open Data reports the date with no data in the morning. Waiting until they report to show the numbers.
+                    && (covidRecord.reported_deaths == null && covidRecord.reported_cases == null)) //CA Open Data reports the date with no data in the morning. Waiting until they report to show the numbers.
                 {
                     continue;
                 }
                 var covidData = new CovidData();
                 covidData.ID = covidRecord._id;
-                covidData.TotalCountConfirmed = covidRecord.CUMULATIVE_CASES ?? 0;
-                covidData.NewCountDeaths = covidRecord.REPORTED_DEATHS ?? 0;
-                covidData.TotalCountDeaths = covidRecord.CUMULATIVE_DEATHS ?? 0;
-                covidData.Rank = covidRecord.rank;
-                covidData.County = covidRecord.AREA;
-                covidData.NewCountConfirmed = covidRecord.REPORTED_CASES ?? 0;
+                covidData.TotalCountConfirmed = covidRecord.cumulative_cases ?? 0;
+                covidData.NewCountDeaths = covidRecord.reported_deaths ?? 0;
+                covidData.TotalCountDeaths = covidRecord.cumulative_deaths ?? 0;                
+                covidData.County = covidRecord.area;
+                covidData.NewCountConfirmed = covidRecord.reported_cases ?? 0;
                 covidData.Date = (DateTime)covidDate;
                 covidDataList.Add(covidData);
             }
@@ -56,7 +55,7 @@ namespace CovidStatus.API.Repositories
         {
             try
             {
-                string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=DATE%20desc";
+                string californiaOpenDataCovidRequest = $"{AppConfigurationSettings.CaliforniaCovidOpenDataAddress}&limit={AppConfigurationSettings.CaliforniaCovidOpenDataLimit}&q={countyName}&sort=date%20desc";
 
                 string covidDataJson = client.GetStringAsync(californiaOpenDataCovidRequest).Result;
                 if (string.IsNullOrEmpty(covidDataJson))

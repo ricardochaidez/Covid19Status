@@ -24,26 +24,25 @@ namespace CovidStatus.API.Entities
 
         public class Record
         {
-            public double rank { get; set; }
-            public int? CUMULATIVE_REPORTED_DEATHS { get; set; }
-            public int? CUMULATIVE_DEATHS { get; set; }
-            public int? CUMULATIVE_REPORTED_TESTS { get; set; }
-            public int? CUMULATIVE_POSITIVE_TESTS { get; set; }
-            public string AREA { get; set; }
-            public int? POSITIVE_TESTS { get; set; }
-            public int? CUMULATIVE_CASES { get; set; }
-            public int? REPORTED_CASES { get; set; }
-            public string CUMULATIVE_REPORTED_CASES { get; set; }
-            public string AREA_TYPE { get; set; }
-            public int? DEATHS { get; set; }
-            public int? TOTAL_TESTS { get; set; }
-            public int? REPORTED_TESTS { get; set; }
-            public int? REPORTED_DEATHS { get; set; }
-            public DateTime? DATE { get; set; }
-            public int? CASES { get; set; }
+            public string cumulative_reported_deaths { get; set; }
+            public double? cumulative_deaths { get; set; }
+            public object cumulative_reported_tests { get; set; }
+            public string cumulative_positive_tests { get; set; }
+            public string area { get; set; }
+            public double? cumulative_cases { get; set; }
+            public double? reported_cases { get; set; }
+            public string positive_tests { get; set; }
+            public string cumulative_reported_cases { get; set; }
+            public string area_type { get; set; }
+            public double? reported_deaths { get; set; }
+            public string total_tests { get; set; }
+            public string deaths { get; set; }
+            public object reported_tests { get; set; }
+            public DateTime? date { get; set; }
+            public string cases { get; set; }
             public int _id { get; set; }
-            public int? CUMULATIVE_TOTAL_TESTS { get; set; }
-            public int? POPULATION { get; set; }
+            public string cumulative_total_tests { get; set; }
+            public string population { get; set; }
         }
 
         public class Links

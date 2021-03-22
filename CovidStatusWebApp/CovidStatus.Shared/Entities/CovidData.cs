@@ -6,11 +6,10 @@ namespace CovidStatus.Shared.Entities
     {
         public int ID { get; set; }
         public double TotalCountConfirmed { get; set; }
-        public int NewCountDeaths { get; set; }
-        public double TotalCountDeaths { get; set; }
-        public double Rank { get; set; }
+        public double NewCountDeaths { get; set; }
+        public double TotalCountDeaths { get; set; }        
         public string County { get; set; }
-        public int NewCountConfirmed { get; set; }
+        public double NewCountConfirmed { get; set; }
         public DateTime Date { get; set; }
         public decimal? CriticalDaysMovingCasesRateChange { get; set; }
         public decimal? CriticalDaysMovingAverageCases { get; set; }
